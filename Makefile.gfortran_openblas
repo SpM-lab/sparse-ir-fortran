@@ -3,7 +3,7 @@ FC = gfortran
 TARGET = test_sparse_ir
 OBJS = test_sparse_ir.o sparse_ir.o sparse_ir_io.o sparse_ir_preset.o
 LDLIBS = -lblas -llapack
-LDFLAGS =  LDFLAGS = -L/usr/lib/x86_64-linux-gnu
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu
 #LDFLAGS = -static-intel
 
 .SUFFIXES: .f90
