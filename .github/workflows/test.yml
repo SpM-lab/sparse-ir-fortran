@@ -20,4 +20,5 @@ jobs:
       - name: Test fortran interface
         run: |
           ln -s Makefile.gfortran_openblas Makefile
+          ls -l
           ./runtest.sh

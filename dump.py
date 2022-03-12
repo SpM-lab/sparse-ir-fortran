@@ -1,5 +1,6 @@
 import argparse
 import sparse_ir
+import xprec # Make sure xprec is install for good accuracy
 
 def run():
     parser = argparse.ArgumentParser(

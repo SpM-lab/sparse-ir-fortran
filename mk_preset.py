@@ -1,4 +1,5 @@
 import sparse_ir
+import xprec # Make sure xprec is install for good accuracy
 import numpy as np
 
 # max line continuation is 255 for Fortran >= 2003,
