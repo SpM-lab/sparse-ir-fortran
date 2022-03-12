@@ -1,0 +1,23 @@
+name: Build/test suite
+
+on: push
+
+jobs:
+  build:
+    name: Run Fortran tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+            sudo apt-get --yes install ccache
+            sudo apt-get update -q -y
+            sudo apt-get install -y libopenblas-base libopenblas-dev
+            pip3 install sparse-ir
+
+      - name: Test fortran interface
+        run: |
+          ln -s Makefile.gfortran_openblas Makefile
+          ./runtest.sh
