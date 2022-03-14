@@ -134,7 +134,7 @@ f"""
         complex(kind(0d0)), allocatable :: u(:, :), uhat_f(:, :), uhat_b(:, :)
         integer, parameter :: size = {b.size}, ntau = {b.ntau}, nfreq_f = {b.nfreq_f}, nfreq_b = {b.nfreq_b}, nlambda = {nlambda}, ndigit = {ndigit}
         integer, parameter :: ntau_reduced = ntau/2+1, nfreq_f_reduced = nfreq_f/2+1, nfreq_b_reduced = nfreq_b/2+1
-        double precision, parameter :: lambda = 1.d1 ** nlambda, eps = 1/1.d1**ndigit
+        double precision, parameter :: lambda = 1.d{nlambda}, eps = 1.d-{ndigit}
 
         integer :: itau, l, ifreq
 """)
