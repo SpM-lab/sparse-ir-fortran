@@ -12,9 +12,11 @@ module sparse_ir
     ! Sampling points, basis functions
     type IR
         integer :: size, ntau, nfreq_f, nfreq_b
-        double precision :: beta, wmax, eps
-        double precision, pointer :: s(:), tau(:)
+        double precision :: beta, lambda, wmax, eps, eps_svd
+        double precision, pointer :: s(:), tau(:), x(:)
         integer, pointer :: freq_f(:), freq_b(:)
+        complex(kind(0d0)), pointer :: u_data(:,:)
+        complex(kind(0d0)), pointer :: uhat_f_data(:,:), uhat_b_data(:,:)
         type(DecomposedMatrix) :: u
         type(DecomposedMatrix) :: uhat_f, uhat_b
     end type
@@ -31,15 +33,17 @@ module sparse_ir
         obj%ntau = size(x)
         obj%nfreq_f = size(freq_f)
         obj%nfreq_b = size(freq_b)
-        obj%beta = beta
-        obj%wmax = lambda/beta
+        obj%lambda = lambda
         obj%eps = eps
+        obj%eps_svd = eps_svd
 
-        allocate(obj%s(obj%size))
-        obj%s = sqrt(0.5*lambda) * s
+        allocate(obj%x(obj%ntau))
+        obj%x = x
 
         allocate(obj%tau(obj%ntau))
-        obj%tau = 0.5 * beta * (x + 1.d0)
+
+        allocate(obj%s(obj%size))
+        obj%s = sqrt(5.0d-1*obj%lambda) * s
 
         allocate(obj%freq_f(obj%nfreq_f))
         obj%freq_f = freq_f
@@ -47,12 +51,34 @@ module sparse_ir
         allocate(obj%freq_b(obj%nfreq_b))
         obj%freq_b = freq_b
 
-        obj%u = decompose(sqrt(2/beta)*u, eps_svd)
-        obj%uhat_f = decompose(sqrt(beta) * uhat_f, eps_svd)
-        obj%uhat_b = decompose(sqrt(beta) * uhat_b, eps_svd)
+        allocate(obj%u_data(obj%ntau, obj%size))
+        obj%u_data = u
+
+        allocate(obj%uhat_f_data(obj%nfreq_f, obj%size))
+        obj%uhat_f_data = uhat_f
+
+        allocate(obj%uhat_b_data(obj%nfreq_b, obj%size))
+        obj%uhat_b_data = uhat_b
+
+        ! Here we define basis sets for the input value of beta. 
+        call set_beta(obj, beta)
     end subroutine
 
-    ! SVD of matrix a. Singular values smaller than esp * the largest one are dropped.
+    subroutine set_beta(obj, beta)
+        type(IR), intent(inout) :: obj
+        double precision, intent(in) :: beta
+
+        obj%beta = beta
+        obj%wmax = obj%lambda / beta
+
+        obj%tau = 5.0d-1 * beta * (obj%x + 1.d0)
+
+        obj%u = decompose(sqrt(2.0d0/beta)*obj%u_data, obj%eps_svd)
+        obj%uhat_f = decompose(sqrt(beta) * obj%uhat_f_data, obj%eps_svd)
+        obj%uhat_b = decompose(sqrt(beta) * obj%uhat_b_data, obj%eps_svd)
+    end subroutine
+
+    ! SVD of matrix a. Singular values smaller than eps * the largest one are dropped.
     function decompose(a, eps) result(dmat)
         complex(kind(0d0)), intent(in) :: a(:, :)
         double precision, intent(in) :: eps

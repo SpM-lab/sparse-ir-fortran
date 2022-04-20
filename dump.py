@@ -1,6 +1,7 @@
 import argparse
 import sparse_ir
 import xprec # Make sure xprec is install for good accuracy
+import numpy as np
 
 def run():
     parser = argparse.ArgumentParser(
@@ -37,7 +38,8 @@ def run():
             print('{:.16e}'.format(s), file=f)
 
         print(f"# sampling times", file=f)
-        times = basis_f.default_tau_sampling_points()
+        #   Add tau = 0, beta to sampling points (for Matsubara summation)
+        times = np.unique(np.hstack([-1, basis_f.default_tau_sampling_points(), 1]))
         print(times.size, file=f)
         for x in times:
             print('{:.16e}'.format(x), file=f)
