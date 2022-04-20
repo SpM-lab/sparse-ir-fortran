@@ -106,6 +106,8 @@ module sparse_ir_io
         end do
 
         call init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, 1d-16)
+
+        deallocate(u, uhat_f, uhat_b)
     end function
 
 end module
