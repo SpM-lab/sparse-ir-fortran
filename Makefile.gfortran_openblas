@@ -28,4 +28,4 @@ clean:
 
 .PHONY: doc
 doc: doc/index.md
-	pandoc --standalone --mathjax -f markdown -t html -c doc/style.css doc/index.md -o doc/index.html
+	pandoc --standalone --mathjax -f markdown -t html -c doc/style.css --metadata pagetitle="README" doc/index.md -o doc/index.html
