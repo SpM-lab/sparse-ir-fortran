@@ -18,5 +18,6 @@ jobs:
             pip3 install pandoc ghp-import
       - name: Build doc
         run: |
+          cp Makefile.gfortran_openblas Makefile
           make doc
           ghp-import -n doc
