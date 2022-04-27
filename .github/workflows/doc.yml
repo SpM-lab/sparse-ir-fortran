@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install dependencies
         run: |
-            pip3 install pandoc
+            pip3 install pandoc ghp-import
       - name: Build doc
         run: |
           make doc
