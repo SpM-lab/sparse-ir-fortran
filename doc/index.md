@@ -101,10 +101,12 @@ Here you are ready to use the IR basis objects and call the IR basis subroutines
 ```
 
 This subroutine updates the objects depending on `beta`.
+
 ## Available objects
 
 ### `DOUBLE PRECISION:: IR%beta`
 It returns the input value $\beta$ of the functions `read_ir` or `mk_ir_preset`.
+
 ### `DOUBLE PRECISION:: IR%lambda`
 It returns the input value $\Lambda$ of the functions `read_ir` or `mk_ir_preset`. $\Lambda$ determines the sparseness of the IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different values of $\Lambda$.
 
