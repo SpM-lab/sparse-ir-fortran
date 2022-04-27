@@ -1,0 +1,22 @@
+name: deploy doc
+
+on:
+  push:
+    branch:
+      - main
+
+jobs:
+  build:
+    name: Build and deploy doc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+            pip3 install pandoc ghp-import
+      - name: Build doc
+        run: |
+          make doc
+          ghp-import -n doc
