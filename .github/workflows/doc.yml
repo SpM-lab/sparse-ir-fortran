@@ -21,6 +21,5 @@ jobs:
             pip3 install pandoc ghp-import
       - name: Build doc
         run: |
-          cp Makefile.gfortran_openblas Makefile
-          make doc
+          pandoc --standalone --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js -f markdown -t html -c doc/style.css --metadata pagetitle="README" doc/index.md -o doc/index.html
           ghp-import -n -p -f doc
