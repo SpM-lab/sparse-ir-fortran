@@ -30,7 +30,7 @@ This allows you to avoid loading data files at runtime.
 ### 1. Generate a fortran source file:
 
 The following command generates a source file containg data for a matrix of
-Λ=10<sup>lambda</sup> (nlambda = 1, 2, 3, 4) and ε=10<sup>-ndigit</sup> (ndigit = 10).
+Λ=10<sup>nlambda</sup> (nlambda = 1, 2, 3, 4) and ε=10<sup>-ndigit</sup> (ndigit = 10).
 
 ```bash
 > python3 mk_preset.py --nlambda 1 2 3 4 --ndigit 10 > sparse_ir_preset.f90
