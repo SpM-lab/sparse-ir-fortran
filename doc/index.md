@@ -101,6 +101,7 @@ Here you are ready to use the IR basis objects and call the IR basis subroutines
 ```
 
 This subroutine updates the objects depending on `beta`.
+
 ## Available objects
 
 ### `DOUBLE PRECISION:: IR%beta`
