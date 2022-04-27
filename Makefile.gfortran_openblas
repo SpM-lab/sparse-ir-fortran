@@ -22,5 +22,10 @@ test_sparse_ir.o: sparse_ir.mod sparse_ir_io.mod sparse_ir_preset.mod
 test: $(TARGET)
 	./test_sparse_ir
 
+.PHONY: clean
 clean:
 	rm -f *.o *.mod
+
+.PHONY: doc
+doc: doc/index.md
+	pandoc --standalone --mathjax -f markdown -t html doc/index.md -o doc/index.html
