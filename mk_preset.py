@@ -15,8 +15,8 @@ class BasisInfo:
         kernel = sparse_ir.LogisticKernel(lambda_)
         sve_result = sparse_ir.compute_sve(kernel, eps)
 
-        self.basis_f = sparse_ir.IRBasis("F", lambda_, eps, kernel=kernel, sve_result=sve_result)
-        self.basis_b = sparse_ir.IRBasis("B", lambda_, eps, kernel=kernel, sve_result=sve_result)
+        self.basis_f = sparse_ir.DimensionlessBasis("F", lambda_, eps, kernel=kernel, sve_result=sve_result)
+        self.basis_b = sparse_ir.DimensionlessBasis("B", lambda_, eps, kernel=kernel, sve_result=sve_result)
         self.s = self.basis_f.s
         self.size = self.s.size
 
