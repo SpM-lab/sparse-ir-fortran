@@ -49,18 +49,23 @@ You do not need `sparse_ir_io.f90` if your program uses embedded data.
 
 ## How to use sparse-ir modules in your Fortran program
 If your program reads data from the file, you should declare the use of the sparse-ir modules to initiate IR basis objects as follows:
+
 ```fortran
 program main
   use sparse_ir
   use sparse_ir_io
 ```
+
 Or, if you want to use the embed data of IR basis objects, you should do this instead:
+
 ```fortran
 program main
   use sparse_ir
   use sparse_ir_preset
 ```
+
 In either case, the derived type of "`IR`" should be declared.
+
 ```fortran
   implicit none
   type(IR) :: ir_obj ! You can declare with any name you wish.
@@ -70,6 +75,7 @@ Hereafter it is assumed that you will set the parameters as $\Lambda = 10^4$, $\
 You can store the IR basis objects into the derived type of "`IR`" as follows:
 
 Using `sparse_ir_io`:
+
 ```fortran
   double precision :: beta ! inverse temperature
   ...
@@ -77,7 +83,9 @@ Using `sparse_ir_io`:
   open(99, file="ir_nlambda4_ndigit10.dat", status='old') ! Any unit number is OK.
   ir_obj = read_ir(99, beta)
 ```
+
 Using `sparse_ir_preset`:
+
 ```fortran
   double precision :: beta ! inverse temperature
   ...
@@ -86,46 +94,53 @@ Using `sparse_ir_preset`:
 ```
 
 Here you are ready to use the IR basis objects and call the IR basis subroutines for a given value of `beta` in your program. If you want to use the IR basis sets with different values of `beta`, you can reset `beta` with using the subroutine `set_beta`:
+
 ```fortran
   beta = 2.0d3
   call set_beta(ir_obj, beta)
 ```
+
 This subroutine updates the objects depending on `beta`.
 ## Available objects
 
 ### `DOUBLE PRECISION:: IR%beta`
 It returns the input value $\beta$ of the functions `read_ir` or `mk_ir_preset`.
 ### `DOUBLE PRECISION:: IR%lambda`
-It returns the input value $\Lambda$ of the functions `read_ir` or `mk_ir_preset`. 
+It returns the input value $\Lambda$ of the functions `read_ir` or `mk_ir_preset`. $\Lambda$ determines the sparseness of the IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different values of $\Lambda$.
 
-$\Lambda$ determines the sparseness of the IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different values of $\Lambda$.
 ### `DOUBLE PRECISION:: IR%wmax`
 It returns the value of $\Lambda/\beta$, where $\beta$ is `IR%beta`.
+
 ### `DOUBLE PRECISION:: IR%eps`
 It returns the value of $\epsilon=10^{-\mathrm{ndigit}}$, where $\mathrm{ndigit}$ is one of input variables of the functions `read_ir` or `mk_ir_preset`.
-
 The cut-off value $\epsilon$ is used to determine how small a singular value should be considered meaningful when the kernels are SVDecomposed for generating the data of IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different cut-offs.
+
 ### `DOUBLE PRECISION:: IR%s(IR%size)`
 It returns the singular values of SVD for generating the data of IR basis.
+
 ### `INTEGER:: IR%size`
 It returns the size of `IR%s`.
+
 ### `DOUBLE PRECISION:: IR%tau(IR%ntau)`
 It returns the values of $\tau$ of sparse sampling points of imaginary time.
+
 ### `INTEGER:: IR%ntau`
 It returns the size of `IR%tau`.
+
 ### `INTEGER:: IR%freq_f(IR%nfreq_f)`
 It returns the odd integers corresponding to sampling Matsubara frequencies for fermionic functions.
+
 ### `INTEGER:: IR%nfreq_f`
 It is the number of sampling Matsubara frequencies for fermionic functions.
+
 ### `INTEGER:: IR%freq_b(IR%nfreq_b)`
 It returns the even integers corresponding to sampling Matsubara frequencies for bosonic functions.
+
 ### `INTEGER:: IR%nfreq_b`
 It is the number of sampling Matsubara frequencies for bosonic functions.
 
 ### `TYPE(DecomposedMatrix):: IR%uhat_f`
-It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`.
-
-The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
+It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`. The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
 
 $$
 \begin{align*}
@@ -169,9 +184,11 @@ The subroutine (re)sets the value of `beta`.
 `IR%u_data`, `IR%uhat_f_data`, and `IR%uhat_b_data` store the dimensionless forms of the IR-basis functions. This subroutine replaces the dimensionless variable `IR%x` with the `IR%beta` of them. This subroutine also do SVD of the basis functions.
 
 The usage is
+
 ```fortran
 call set_beta(obj, beta)
 ```
+
 where `beta` is a `DOUBLE PRECISION` variable and `obj` is the derived type of "`IR`". In this subroutine, the objects in `obj` depending on `beta` are updated.
 
 
@@ -185,9 +202,11 @@ G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{
 $$
 
 The usage is
+
 ```fortran
 call fit_matsubara_f(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G(\mathrm{i}\nu_n)$ and $G_l$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G(\mathrm{i}\nu_n)$ to a 2-dimensional array whose last axis corresponds to $l$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%nfreq_f)` and `(**, obj%size)`, respectively.
 
@@ -201,9 +220,11 @@ G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{
 $$
 
 The usage is
+
 ```fortran
 call fit_matsubara_b(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G(\mathrm{i}\nu_n)$ and $G_l$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G(\mathrm{i}\nu_n)$ to a 2-dimensional array whose last axis corresponds to $l$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%nfreq_b)` and `(**, obj%size)`, respectively.
 
@@ -217,9 +238,11 @@ G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\tau_m) - \sum_{l}U_l(\tau_m)G_l
 $$
 
 The usage is
+
 ```fortran
 call fit_tau(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G(\tau_m)$ and $G_l$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G(\tau_m)$ to a 2-dimensional array whose last axis corresponds to $l$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%ntau)` and `(**, obj%size)`, respectively.
 
@@ -233,9 +256,11 @@ G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
 $$
 
 The usage is
+
 ```fortran
 call evaluate_matsubara_f(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G_l$ and $G(\mathrm{i}\nu_n)$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G_l$ to a 2-dimensional array whose last axis corresponds to $\mathrm{i}\nu_n$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%size)` and  `(**, obj%nfreq_f)`, respectively.
 
@@ -249,9 +274,11 @@ G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
 $$
 
 The usage is
+
 ```fortran
 call evaluate_matsubara_b(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G_l$ and $G(\mathrm{i}\nu_n)$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G_l$ to a 2-dimensional array whose last axis corresponds to $\mathrm{i}\nu_n$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%size)` and  `(**, obj%nfreq_b)`, respectively.
 
@@ -265,8 +292,10 @@ G(\tau_m) = \sum_{l}U_l(\tau_m)G_l
 $$
 
 The usage is
+
 ```fortran
 call evaluate_tau(obj, g_in, g_out)
 ```
+
 where `g_in` and `g_out` correspond to $G_l$ and $G(\tau_m)$, respectively. `obj` is the derived type of "`IR`", and `g_in` and `g_out` are 2-dimensional `COMPLEX(KIND(0D0))` arrays. The inputs are `obj` and `g_in` and the output is `g_out`. Before calling this subroutine, you should reshape the array of $G_l$ to a 2-dimensional array whose last axis corresponds to $\mathrm{i}\nu_n$ and allocate `g_out` with appropriate shape.
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%size)` and  `(**, obj%ntau)`, respectively.
