@@ -22,6 +22,6 @@ jobs:
       - name: Build doc
         run: |
           cd doc
-          pandoc --standalone --self-contained --mathjax -f markdown -t html5 --template=template.html --metadata pagetitle="README" index.md -o index.html
+          pandoc --standalone --self-contained --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js -f markdown -t html5 --template=template.html --metadata pagetitle="README" index.md -o index.html
           cd ${GITHUB_WORKSPACE}
           ghp-import -n -p -f doc
