@@ -145,11 +145,15 @@ It is the number of sampling Matsubara frequencies for bosonic functions.
 It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`. The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
 
 $$
-\begin{align*}
-\hat{U}_l(\mathrm{i}\nu_n) &= A_{nl} \\
-&=\sum_{r,r'}U_{nr} \Sigma_{rr'} (V^\mathrm{T})_{r'l} \\
-(A &= U \Sigma V^\mathrm{T}),
-\end{align*}
+\hat{U}_l(\mathrm{i}\nu_n) = A_{nl}
+$$
+
+$$
+\hspace{98pt}=\sum_{r,r'}U_{nr} \Sigma_{rr'} (V^\mathrm{T})_{r'l}
+$$
+
+$$
+\hspace{40pt}(A = U \Sigma V^\mathrm{T}),
 $$
 
 with
@@ -198,9 +202,7 @@ where `beta` is a `DOUBLE PRECISION` variable and `obj` is the derived type of "
 The subroutine fits a set of expansion coefficients $G_l$ to a given fermionic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies by using SVD.
 
 $$
-\begin{align*}
 G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
-\end{align*}
 $$
 
 The usage is
@@ -216,9 +218,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 The subroutine fits a set of expansion coefficients $G_l$ to a given bosonic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies by using SVD.
 
 $$
-\begin{align*}
 G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
-\end{align*}
 $$
 
 The usage is
@@ -234,9 +234,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 The subroutine fits a set of expansion coefficients $G_l$ to a given imaginary-time function $G(\tau_m)$ on sampling points by using SVD.
 
 $$
-\begin{align*}
 G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\tau_m) - \sum_{l}U_l(\tau_m)G_l \right|^2
-\end{align*}
 $$
 
 The usage is
@@ -252,9 +250,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 This subroutine reconstructs a fermionic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
 
 $$
-\begin{align*}
 G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
-\end{align*}
 $$
 
 The usage is
@@ -270,9 +266,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 This subroutine reconstructs a bosonic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
 
 $$
-\begin{align*}
 G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
-\end{align*}
 $$
 
 The usage is
@@ -288,9 +282,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 This subroutine reconstructs a function $G(\tau_m)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
 
 $$
-\begin{align*}
 G(\tau_m) = \sum_{l}U_l(\tau_m)G_l
-\end{align*}
 $$
 
 The usage is
