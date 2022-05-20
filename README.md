@@ -234,7 +234,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 The subroutine fits a set of expansion coefficients $G_l$ to a given imaginary-time function $G(\tau_m)$ on sampling points by using SVD.
 
 $$
-G_l = {\rm argmin}_{G_l} \left| G(\tau_m) - \sum_{l} U_l (\tau_{m}) G_l \right|^2
+G_l = {\rm argmin}_{G_l} \left| G(\tau_m) - \sum_l U_l (\tau_{m}) G_l \right|^2
 $$
 
 The usage is
