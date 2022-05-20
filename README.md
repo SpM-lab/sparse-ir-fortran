@@ -145,7 +145,7 @@ It is the number of sampling Matsubara frequencies for bosonic functions.
 It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`. The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
 
 $$
-\hat{U} _{l} (\mathrm{i}\nu_n) = A_{n l}
+\hat{U}_l (\mathrm{i}\nu_n) = A_{n l}
 $$
 
 $$
