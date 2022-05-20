@@ -1,0 +1,27 @@
+name: deploy doc
+
+on:
+  push:
+    branch:
+      - main
+
+jobs:
+  build:
+    name: Build and deploy doc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+            sudo apt-get --yes install pandoc
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+            pip3 install pandoc ghp-import
+      - name: Build doc
+        run: |
+          cd doc
+          pandoc --standalone --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js -f markdown -t html5 --template=template.html --metadata pagetitle="README" index.md -o index.html
+          cd ${GITHUB_WORKSPACE}
+          ghp-import -n -p -f doc
