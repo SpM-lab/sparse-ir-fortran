@@ -12,7 +12,7 @@ Before you use it, please install `sparse-ir` with `xprec`. The python modules o
 > python3 dump.py 1e+4 1e-10 ir_nlambda4_ndigit10.dat
 ```
 
-This generates the data file `ir_nlambda4_ndigit10.dat` containing sparse sampling points and transformation matrices for $\Lambda=10^4$ and $\epsilon = 10^{-10}$ ($\epsilon$ is a cut-off value for singular values).
+This generates the data file `ir_nlambda4_ndigit10.dat` containing sparse sampling points and transformation matrices for $\Lambda=10^4$ and $\epsilon = 10^{-10}$ ($\epsilon$ is a cut-off value used when creating IR-basis objects).
 
 ### 2. Build object files and link them to your program:
 
@@ -48,7 +48,7 @@ The generated file `sparse_ir_preset.f90` is consisitent with Fortran95 and can 
 You do not need `sparse_ir_io.f90` if your program uses embedded data.
 
 ## How to use sparse-ir modules in your Fortran program
-If your program reads data from the file, you should declare the use of the sparse-ir modules to initiate IR basis objects as follows:
+If your program reads data from the file, you should declare the use of the sparse-ir modules to initiate IR-basis objects as follows:
 
 ```fortran
 program main
@@ -115,7 +115,7 @@ It returns the value of $\Lambda/\beta$, where $\beta$ is `IR%beta`.
 
 ### `DOUBLE PRECISION:: IR%eps`
 It returns the value of $\epsilon=10^{-\mathrm{ndigit}}$, where $\mathrm{ndigit}$ is one of input variables of the functions `read_ir` or `mk_ir_preset`.
-The cut-off value $\epsilon$ is used to determine how small a singular value should be considered meaningful when the kernels are SVDecomposed for generating the data of IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different cut-offs.
+The cut-off value $\epsilon$ is used to determine the number of numerically significant singular values when the kernels are SVDecomposed for generating the data of IR basis. In the "`sparse-ir-fortran`" interface, this value determines which dataset to extract among ones with different cut-offs.
 
 ### `DOUBLE PRECISION:: IR%s(IR%size)`
 It returns the singular values of SVD for generating the data of IR basis.
@@ -183,7 +183,7 @@ It refers to the derived type of `DecomposedMatrix` which contains `IR%u%a`, `IR
 
 ### `SUBROUTINE set_beta`
 The subroutine (re)sets the value of `beta`.
-`IR%u_data`, `IR%uhat_f_data`, and `IR%uhat_b_data` store the dimensionless forms of the IR-basis functions. This subroutine replaces the dimensionless variable `IR%x` with the `IR%beta` of them. This subroutine also do SVD of the basis functions.
+`IR%u_data`, `IR%uhat_f_data`, and `IR%uhat_b_data` store the dimensionless forms of the IR-basis functions. This subroutine replaces the dimensionless variable `IR%x` with the `IR%beta` of them. This subroutine also does SVD of the basis functions.
 
 The usage is
 
