@@ -142,7 +142,7 @@ It returns the even integers corresponding to sampling Matsubara frequencies for
 It is the number of sampling Matsubara frequencies for bosonic functions.
 
 ### `TYPE(DecomposedMatrix):: IR%uhat_f`
-It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`. The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
+It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_f%a`, `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`. When a derived type of `IR` is defined for a given `beta`, SVD of $\{\hat{U_l}(\mathrm{i}\nu_n)\}$ for a given `beta` is performed to define `IR%uhat_f%inv_s`, `IR%uhat_f%ut`, and `IR%uhat_f%v`, which are used in subroutines `fit_matsubara_f` and `evaluate_matsubara_f`. The basis functions on fermionic sampling Matsubara frequencies is SVDecomposed in advance  as follows:
 
 $$
 \hat{U}{}_l (\mathrm{i}\nu_n) = A_{n l}
@@ -165,7 +165,7 @@ $$
 If the following fitting problem is given for a certain fermionic function $G(\mathrm{i}\nu_n)$ defined on Matsubara frequencies,
 
 $$
-\sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l\approx G(\mathrm{i}\nu_n),
+\sum_{l}\hat{U_l}(\mathrm{i}\nu_n)G_l\approx G(\mathrm{i}\nu_n),
 $$
 
 you can solve the problem using `fit_matsubara_f` as follows:
@@ -177,7 +177,7 @@ $$
 `IR%uhat_f%a`, `IR%uhat_f%ut`, and `IR%uhat_f%v` are 2-dimensional `COMPLEX(KIND(0D0))` arrays corresponding to $A$, $U^\mathrm{T}$, and $V$, respectively. `IR%uhat_f%inv_s` is the 1-dimensional `DOUBLE PRECISION` array storing the components of the diagonal matrix $\Sigma^+$, namely $\{1/\sigma_r\}$. `IR%uhat_f%ns` is the size of  `IR%uhat_f%inv_s`. `IR%uhat_f%m` and `IR%uhat_f%n` equal to `IR%nfreq_f` and `IR%size`, respectively.
 
 ### `TYPE(DecomposedMatrix):: IR%uhat_b`
-It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_b%a`, `IR%uhat_b%inv_s`, `IR%uhat_b%ut`, and `IR%uhat_b%v`, which are used in subroutines `fit_matsubara_b` and `evaluate_matsubara_b`. `IR%u%a` corresponds to $\{\hat{U}_l(\mathrm{i}\nu_n)\}$ defined on bosonic Matsubara frequencies. This derived type is similar to `IR%uhat_f`, so please see the description of `IR%uhat_f` as well.
+It refers to the derived type of `DecomposedMatrix` which contains `IR%uhat_b%a`, `IR%uhat_b%inv_s`, `IR%uhat_b%ut`, and `IR%uhat_b%v`, which are used in subroutines `fit_matsubara_b` and `evaluate_matsubara_b`. `IR%u%a` corresponds to $\{\hat{U_l}(\mathrm{i}\nu_n)\}$ defined on bosonic Matsubara frequencies. This derived type is similar to `IR%uhat_f`, so please see the description of `IR%uhat_f` as well.
 
 ### `TYPE(DecomposedMatrix):: IR%u`
 It refers to the derived type of `DecomposedMatrix` which contains `IR%u%a`, `IR%u%inv_s`, `IR%u%ut`, and `IR%u%v`, which are used in subroutines `fit_matsubara_b` and `evaluate_matsubara_b`. `IR%u%a` corresponds to $\{U_l(\tau_m)\}$ on sampling points of imaginary time. This derived type is similar to `IR%uhat_f`, so please see the description of `IR%uhat_f` as well.
@@ -202,7 +202,7 @@ where `beta` is a `DOUBLE PRECISION` variable and `obj` is the derived type of "
 The subroutine fits a set of expansion coefficients $G_l$ to a given fermionic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies by using SVD.
 
 $$
-G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) \right|^2
+G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U_l}(\mathrm{i}\nu_n)G_l \right|^2
 $$
 
 The usage is
@@ -218,7 +218,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 The subroutine fits a set of expansion coefficients $G_l$ to a given bosonic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies by using SVD.
 
 $$
-G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
+G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U_l}(\mathrm{i}\nu_n)G_l \right|^2
 $$
 
 The usage is
@@ -250,7 +250,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 This subroutine reconstructs a fermionic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
 
 $$
-G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
+G(\mathrm{i}\nu_n) = \sum_{l}\hat{U_l}(\mathrm{i}\nu_n)G_l
 $$
 
 The usage is
@@ -266,7 +266,7 @@ That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, ob
 This subroutine reconstructs a bosonic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
 
 $$
-G(\mathrm{i}\nu_n) = \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l
+G(\mathrm{i}\nu_n) = \sum_{l}\hat{U_l}(\mathrm{i}\nu_n)G_l
 $$
 
 The usage is
