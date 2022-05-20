@@ -171,7 +171,7 @@ $$
 you can solve the problem using `fit_matsubara_f` as follows:
 
 $$
-G_l\approx \sum_{r, n}V_{lr}\Sigma^+_{rr}(U^\mathrm{T})_{rn}G(\mathrm{i}\nu_n).
+G_l\approx \sum_{r, n}V_{lr}\Sigma_{rr}^+(U^\mathrm{T})_{rn}G(\mathrm{i}\nu_n).
 $$
 
 `IR%uhat_f%a`, `IR%uhat_f%ut`, and `IR%uhat_f%v` are 2-dimensional `COMPLEX(KIND(0D0))` arrays corresponding to $A$, $U^\mathrm{T}$, and $V$, respectively. `IR%uhat_f%inv_s` is the 1-dimensional `DOUBLE PRECISION` array storing the components of the diagonal matrix $\Sigma^+$, namely $\{1/\sigma_r\}$. `IR%uhat_f%ns` is the size of  `IR%uhat_f%inv_s`. `IR%uhat_f%m` and `IR%uhat_f%n` equal to `IR%nfreq_f` and `IR%size`, respectively.
