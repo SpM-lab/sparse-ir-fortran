@@ -202,7 +202,7 @@ where `beta` is a `DOUBLE PRECISION` variable and `obj` is the derived type of "
 The subroutine fits a set of expansion coefficients $G_l$ to a given fermionic function $G(\mathrm{i}\nu_n)$ on sampling Matsubara frequencies by using SVD.
 
 $$
-G_l = \mathrm{argmin}_{G_l}\left|G(\mathrm{i}\nu_n)\right|^2
+G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) \right|^2
 $$
 
 The usage is
