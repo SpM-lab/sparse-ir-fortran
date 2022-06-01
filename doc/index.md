@@ -30,7 +30,7 @@ This allows you to avoid loading data files at runtime.
 ### 1. Generate a fortran source file:
 
 The following command generates a source file containg data for a matrix of
-$\Lambda=10^{\mathrm{nlambda}}$ (nlambda = 1, 2, 3, 4) and $\epsilon=10^{-\mathrm{ndigit}}$ (ndigit = 10).
+$\Lambda=10^{\mathrm{nlambda}}$ ($\mathrm{nlambda} = 1, 2, 3, 4$) and $\epsilon=10^{-\mathrm{ndigit}}$ ($\mathrm{ndigit} = 10$).
 
 ```bash
 > python3 mk_preset.py --nlambda 1 2 3 4 --ndigit 10 > sparse_ir_preset.f90
@@ -199,7 +199,7 @@ The subroutine fits a set of expansion coefficients $G_l$ to a given fermionic f
 
 $$
 \begin{align*}
-G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
+G_l = \underset{G_l}{{\rm argmin}}\sum_{n}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
 \end{align*}
 $$
 
@@ -217,7 +217,7 @@ The subroutine fits a set of expansion coefficients $G_l$ to a given bosonic fun
 
 $$
 \begin{align*}
-G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
+G_l = \underset{G_l}{{\rm argmin}}\sum_{n}\left|G(\mathrm{i}\nu_n) - \sum_{l}\hat{U}_l(\mathrm{i}\nu_n)G_l \right|^2
 \end{align*}
 $$
 
@@ -235,7 +235,7 @@ The subroutine fits a set of expansion coefficients $G_l$ to a given imaginary-t
 
 $$
 \begin{align*}
-G_l = {\mathop{\rm argmin}\limits}_{G_l}\left|G(\tau_m) - \sum_{l}U_l(\tau_m)G_l \right|^2
+G_l = \underset{G_l}{{\rm argmin}}\sum_{m}\left|G(\tau_m) - \sum_{l}U_l(\tau_m)G_l \right|^2
 \end{align*}
 $$
 

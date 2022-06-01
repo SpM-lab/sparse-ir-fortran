@@ -43,12 +43,12 @@ div.column{display: inline-block; vertical-align: top; width: 50%;}
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
+.sourceCode { overflow: scroll; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
-div.sourceCode { overflow: auto; }
+div.sourceCode { overflow: scroll; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
@@ -76,6 +76,7 @@ a.sourceLine::before { text-decoration: underline; }
 body {
 font-family: Helvetica, arial, sans-serif;
 font-size: 14px;
+-webkit-text-size-adjust: 100%;
 line-height: 1.6;
 padding-top: 10px;
 padding-bottom: 10px;
@@ -102,7 +103,6 @@ h1, h2, h3, h4, h5, h6 {
 margin: 20px 0 10px;
 padding: 0;
 font-weight: bold;
--webkit-font-smoothing: antialiased;
 cursor: text;
 position: relative; }
 h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
@@ -112,7 +112,8 @@ font-size: inherit; }
 h2 tt, h2 code {
 font-size: inherit; }
 h3 tt, h3 code {
-font-size: inherit; }
+font-size: inherit;
+white-space: normal; }
 h4 tt, h4 code {
 font-size: inherit; }
 h5 tt, h5 code {
