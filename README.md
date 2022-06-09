@@ -12,7 +12,7 @@ Before you use it, please install `sparse-ir` with `xprec`. The python modules o
 > python3 dump.py 1e+4 1e-10 ir_nlambda4_ndigit10.dat
 ```
 
-This generates the data file `ir_nlambda4_ndigit10.dat` containing sparse sampling points and transformation matrices for Λ=10<sup>4</sup> and ε<sup>-10</sup>  (ε is a cut-off value for singular values).
+This generates the data file `ir_nlambda4_ndigit10.dat` containing sparse sampling points and transformation matrices for Λ=10<sup>4</sup> and ε<sup>-10</sup>  (ε is a cut-off value used when creating IR-basis objects).
 
 ### 2. Build object files and link them to your program:
 
