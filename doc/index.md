@@ -285,7 +285,7 @@ where `g_in` and `g_out` correspond to $G_l$ and $G(\mathrm{i}\nu_n)$, respectiv
 That is, `g_in` and `g_out` should be allocated so as to have shapes of `(**, obj%size)` and  `(**, obj%nfreq_b)`, respectively.
 
 ### `SUBROUTINE evaluate_tau`
-This subroutine reconstructs a function $G(\tau_m)$ on sampling Matsubara frequencies from a given set of expansion coefficients $G_l$ as follows:
+This subroutine reconstructs a function $G(\tau_m)$ on sampling points of imaginary time from a given set of expansion coefficients $G_l$ as follows:
 
 $$
 \begin{align*}
