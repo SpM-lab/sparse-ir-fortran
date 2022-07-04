@@ -171,6 +171,7 @@ module sparse_ir
         !
         CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
                    l2, obj%u%a, m, czero, res(:, :), l2)
+        ! res = matmul(arr, transpose(obj%u%a))
     end subroutine
 
     subroutine evaluate_matsubara_f(obj, arr, res)
@@ -191,6 +192,7 @@ module sparse_ir
         !
         CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
                    l2, obj%uhat_f%a, m, czero, res(:, :), l2)
+        ! res = matmul(arr, transpose(obj%uhat_f%a))
     end subroutine
 
     subroutine evaluate_matsubara_b(obj, arr, res)
@@ -211,6 +213,7 @@ module sparse_ir
         !
         CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
                    l2, obj%uhat_b%a, m, czero, res(:, :), l2)
+        ! res = matmul(arr, transpose(obj%uhat_b%a))
     end subroutine
 
     ! Implementation of fit
