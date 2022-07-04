@@ -122,7 +122,7 @@ module sparse_ir
         allocate(dmat%v(n, ns))
 
         dmat%a = a
-        dmat%inv_s(1:ns) = 1/s(1:ns)
+        dmat%inv_s(1:ns) = 1.0D0 / s(1:ns)
         dmat%ut(1:ns, 1:m) = conjg(transpose(u(1:m, 1:ns)))
         dmat%v(1:n, 1:ns) = conjg(transpose(vt(1:ns, 1:n)))
         dmat%m = size(a, 1)
@@ -157,24 +157,60 @@ module sparse_ir
         type(IR), intent(in) :: obj
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
-        ! TODO: using zgemm
-        res = matmul(arr, transpose(obj%u%a))
+        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
+        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
+        integer :: m, n, l1, l2
+        !
+        l1 = size(arr, 1)
+        n = size(arr, 2)
+        l2 = size(res, 1)
+        m = size(res, 2)
+        IF (l1 .NE. l2) stop 'wrong number of rows of input matrix.'
+        IF (n .NE. obj%u%n) stop 'wrong number of columns of input matrix.'
+        IF (m .NE. obj%u%m) stop 'wrong number of columns of output matrix.'
+        !
+        CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
+                   l2, obj%u%a, m, czero, res(:, :), l2)
     end subroutine
 
     subroutine evaluate_matsubara_f(obj, arr, res)
         type(IR), intent(in) :: obj
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
-        ! TODO: using zgemm
-        res = matmul(arr, transpose(obj%uhat_f%a))
+        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
+        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
+        integer :: m, n, l1, l2
+        !
+        l1 = size(arr, 1)
+        n = size(arr, 2)
+        l2 = size(res, 1)
+        m = size(res, 2)
+        IF (l1 .NE. l2) stop 'wrong number of rows of input matrix.'
+        IF (n .NE. obj%uhat_f%n) stop 'wrong number of columns of input matrix.'
+        IF (m .NE. obj%uhat_f%m) stop 'wrong number of columns of output matrix.'
+        !
+        CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
+                   l2, obj%uhat_f%a, m, czero, res(:, :), l2)
     end subroutine
 
     subroutine evaluate_matsubara_b(obj, arr, res)
         type(IR), intent(in) :: obj
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
-        ! TODO: using zgemm
-        res = matmul(arr, transpose(obj%uhat_b%a))
+        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
+        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
+        integer :: m, n, l1, l2
+        !
+        l1 = size(arr, 1)
+        n = size(arr, 2)
+        l2 = size(res, 1)
+        m = size(res, 2)
+        IF (l1 .NE. l2) stop 'wrong number of rows of input matrix.'
+        IF (n .NE. obj%uhat_b%n) stop 'wrong number of columns of input matrix.'
+        IF (m .NE. obj%uhat_b%m) stop 'wrong number of columns of output matrix.'
+        !
+        CALL ZGEMM('n', 't', l1, m, n, cone, arr(:,:), &
+                   l2, obj%uhat_b%a, m, czero, res(:, :), l2)
     end subroutine
 
     ! Implementation of fit
@@ -185,7 +221,7 @@ module sparse_ir
 
         complex(kind(0d0)), allocatable :: ut_arr(:, :)
 
-        integer :: nb, m, n, ns, i, j
+        integer :: nb, m, n, ns, i, j, info
 
         ! ut(ns, m)
         ! v(n, ns)
