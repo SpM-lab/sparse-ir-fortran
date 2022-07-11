@@ -101,7 +101,7 @@ program main
 
         complex(kind(0d0)),allocatable :: giv(:,:), gl_matsu(:, :), gl_tau(:, :), gtau(:, :), &
             gtau_reconst(:, :), giv_reconst(:, :)
-        integer n, t, l
+        integer n, t
 
         PI =4.D0*DATAN(1.D0)
 
@@ -262,7 +262,7 @@ program main
             gtau_reconst(:, :), giv_reconst(:, :), g_spr(:, :), giv_ref(:,:), gtau_ref(:,:)
         integer, allocatable :: freq(:) 
         double precision, allocatable :: tau(:)
-        integer n, t, l
+        integer n, t
 
         PI =4.D0*DATAN(1.D0)
 
@@ -361,7 +361,7 @@ program main
             gtau_reconst(:, :), giv_reconst(:, :), g_spr(:, :), giv_ref(:,:), gtau_ref(:,:)
         integer, allocatable :: freq(:) 
         double precision, allocatable :: tau(:)
-        integer n, t, l
+        integer n, t
 
         PI =4.D0*DATAN(1.D0)
 

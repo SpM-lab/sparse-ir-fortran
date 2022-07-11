@@ -325,7 +325,7 @@ module sparse_ir
 
         complex(kind(0d0)), allocatable :: ut_arr(:, :)
 
-        integer :: nb, m, n, ns, i, j, info
+        integer :: nb, m, n, ns, i, j
 
         ! ut(ns, m)
         ! v(n, ns)
