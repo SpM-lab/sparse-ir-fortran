@@ -25,20 +25,21 @@ class BasisInfo:
         self.tau = np.unique(np.hstack([-1, self.basis_f.default_tau_sampling_points(), 1]))
         self.freq_f = self.basis_f.default_matsubara_sampling_points()
         self.freq_b = self.basis_b.default_matsubara_sampling_points()
+        self.omega = np.unique(np.hstack([-1, self.basis_f.default_omega_sampling_points(), 1]))
         self.ntau = self.tau.size
         self.nfreq_f = self.freq_f.size
         self.nfreq_b = self.freq_b.size
+        self.nomega = self.omega.size
         self.ntau_reduced = self.ntau //2 + 1
         self.nfreq_f_reduced = self.nfreq_f //2 + 1
         self.nfreq_b_reduced = self.nfreq_b //2 + 1
+        self.nomega_reduced = self.nomega //2 + 1
 
         # Transformation matrix
-        self.smpl_tau = sparse_ir.TauSampling(self.basis_f, sampling_points=self.tau)
-        self.smpl_matsu_f = sparse_ir.MatsubaraSampling(self.basis_f, sampling_points=self.freq_f)
-        self.smpl_matsu_b = sparse_ir.MatsubaraSampling(self.basis_b, sampling_points=self.freq_b)
-        self.u = self.smpl_tau.matrix.a
-        self.uhat_f = self.smpl_matsu_f.matrix.a
-        self.uhat_b = self.smpl_matsu_b.matrix.a
+        self.u = self.basis_f.u(self.tau).T
+        self.uhat_f = self.basis_f.uhat(self.freq_f).T
+        self.uhat_b = self.basis_b.uhat(self.freq_b).T
+        self.v = self.basis_f.v(self.omega).T
 
 
 def _str(value):
@@ -81,9 +82,11 @@ f"""\
     double precision :: tau_{sig}({b.ntau})
     integer :: freq_f_{sig}({b.nfreq_f})
     integer :: freq_b_{sig}({b.nfreq_b})
+    double precision :: omega_{sig}({b.nomega})
     double precision :: u_r_{sig}({b.ntau_reduced} * {b.size})
     double precision :: uhat_f_r_{sig}({b.nfreq_f_reduced} * {b.size})
     double precision :: uhat_b_r_{sig}({b.nfreq_b_reduced} * {b.size})
+    double precision :: v_r_{sig}({b.nomega_reduced} * {b.size})
 """
             )
 
@@ -125,20 +128,21 @@ f"""\
 
 def print_data(nlambda, ndigit, b):
     sig = f"nlambda{nlambda}_ndigit{ndigit}"
-    size = b.size
     print(
 f"""
     function mk_nlambda{nlambda}_ndigit{ndigit}(beta) result(obj)
         double precision, intent(in) :: beta
         type(IR) :: obj
-        complex(kind(0d0)), allocatable :: u(:, :), uhat_f(:, :), uhat_b(:, :)
-        integer, parameter :: size = {b.size}, ntau = {b.ntau}, nfreq_f = {b.nfreq_f}, nfreq_b = {b.nfreq_b}, nlambda = {nlambda}, ndigit = {ndigit}
+        complex(kind(0d0)), allocatable :: u(:, :), uhat_f(:, :), uhat_b(:, :), v(:, :), spr(:, :)
+        integer, parameter :: size = {b.size}, ntau = {b.ntau}, nfreq_f = {b.nfreq_f}, nfreq_b = {b.nfreq_b}, nomega = {b.nomega}
+        integer, parameter :: nlambda = {nlambda}, ndigit = {ndigit}
         integer, parameter :: ntau_reduced = ntau/2+1, nfreq_f_reduced = nfreq_f/2+1, nfreq_b_reduced = nfreq_b/2+1
+        integer, parameter :: nomega_reduced = nomega/2+1
         double precision, parameter :: lambda = 1.d{nlambda}, eps = 1.d-{ndigit}
 
-        integer :: itau, l, ifreq
+        integer :: itau, l, ifreq, iomega
 """)
-    for varname in ["s", "tau", "freq_f", "freq_b", "u_r", "uhat_f_r", "uhat_b_r"]:
+    for varname in ["s", "tau", "freq_f", "freq_b", "u_r", "uhat_f_r", "uhat_b_r", "omega", "v_r"]:
         print(8*" " + f"call init_{varname}_{sig}()")
 
     print(
@@ -146,6 +150,8 @@ f"""
         allocate(u(ntau, size))
         allocate(uhat_f(nfreq_f, size))
         allocate(uhat_b(nfreq_b, size))
+        allocate(v(nomega, size))
+        allocate(spr(nomega, size))
 
         ! Use the fact U_l(tau) is even/odd for even/odd l-1.
         do l = 1, size
@@ -189,12 +195,24 @@ f"""
             end do
         end do
 
+        ! Use the fact V_l(omega) is even/odd for even/odd l-1.
+        do l = 1, size
+            do iomega = 1, nomega_reduced
+                v(iomega, l) = v_r_{sig}(iomega + {b.nomega_reduced}*(l-1))
+                v(nomega-iomega+1, l) = (-1)**(l-1) * v_r_{sig}(iomega + {b.nomega_reduced}*(l-1))
+            end do
+            do iomega = 1, nomega
+                spr(iomega, l) = - s_{sig}(l) * v(iomega, l)
+            end do
+        end do
+
         call init_ir(obj, beta, lambda, eps,&
             s_{sig}, tau_{sig},&
             freq_f_{sig}, freq_b_{sig},&
-            u, uhat_f, uhat_b, 1d-20)
+            u, uhat_f, uhat_b, omega_{sig},&
+            v, spr, 1d-20)
 
-        deallocate(u, uhat_f, uhat_b)
+        deallocate(u, uhat_f, uhat_b, v, spr)
     end function
 """
     )
@@ -203,11 +221,12 @@ f"""
     print_vector_data(b.tau, f"tau_{sig}")
     print_vector_data(b.freq_f, f"freq_f_{sig}")
     print_vector_data(b.freq_b, f"freq_b_{sig}")
+    print_vector_data(b.omega, f"omega_{sig}")
 
-    ntau_reduced = b.ntau_reduced
-    print_vector_data(b.u[0:ntau_reduced,:], f"u_r_{sig}")
+    print_vector_data(b.u[0:b.ntau_reduced,:], f"u_r_{sig}")
     print_vector_data((b.uhat_f.real + b.uhat_f.imag)[0:b.nfreq_f_reduced,:], f"uhat_f_r_{sig}")
     print_vector_data((b.uhat_b.real + b.uhat_b.imag)[0:b.nfreq_b_reduced,:], f"uhat_b_r_{sig}")
+    print_vector_data(b.v[0:b.nomega_reduced,:], f"v_r_{sig}")
 
 def _array_to_strings(arr, num_elem_str = 3):
     """ Convert array of float or int to a list of strings """

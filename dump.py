@@ -64,6 +64,19 @@ def run():
                 for i in range(freqs.size):
                     print('{:.16e} {:.16e}'.
                         format(uhatval[l, i].real, uhatval[l, i].imag), file=f)
+        
+        print(f"# sampling poles", file=f)
+        #   Add w_p = -wmax, +wmax to sampling poles
+        omega = np.unique(np.hstack([-1, basis_f.default_omega_sampling_points(), 1]))
+        print(omega.size, file=f)
+        for x in omega:
+            print('{:.16e}'.format(x), file=f)
+
+        print(f"# v", file=f)
+        vval = basis_f.v(omega)
+        for l in range(basis_f.size):
+            for i in range(omega.size):
+                print('{:.16e}'.format(vval[l, i]), file=f)
 
 if __name__ == '__main__':
     run()
