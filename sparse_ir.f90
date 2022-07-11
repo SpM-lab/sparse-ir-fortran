@@ -98,19 +98,6 @@ module sparse_ir
     subroutine finalize_ir(obj)
         type(IR) :: obj
 
-        if (allocated(obj%x)) deallocate(obj%x)
-        if (allocated(obj%tau)) deallocate(obj%tau)
-        if (allocated(obj%s)) deallocate(obj%s)
-        if (allocated(obj%freq_f)) deallocate(obj%freq_f)
-        if (allocated(obj%freq_b)) deallocate(obj%freq_b)
-        if (allocated(obj%u_data)) deallocate(obj%u_data)
-        if (allocated(obj%uhat_f_data)) deallocate(obj%uhat_f_data)
-        if (allocated(obj%uhat_b_data)) deallocate(obj%uhat_b_data)
-        if (allocated(obj%y)) deallocate(obj%y)
-        if (allocated(obj%omega)) deallocate(obj%omega)
-        if (allocated(obj%v_data)) deallocate(obj%v_data)
-        if (allocated(obj%spr_data)) deallocate(obj%spr_data)
-
         if (associated(obj%x)) nullify(obj%x)
         if (associated(obj%tau)) nullify(obj%tau)
         if (associated(obj%s)) nullify(obj%s)
@@ -132,12 +119,7 @@ module sparse_ir
 
     subroutine finalize_dmat(dmat)
         type(DecomposedMatrix) :: dmat
-      
-        if (allocated(dmat%a)) deallocate(dmat%a)
-        if (allocated(dmat%inv_s)) deallocate(dmat%inv_s)
-        if (allocated(dmat%ut)) deallocate(dmat%ut)
-        if (allocated(dmat%v)) deallocate(dmat%v)
-      
+           
         if (associated(dmat%a)) nullify(dmat%a)
         if (associated(dmat%inv_s)) nullify(dmat%inv_s)
         if (associated(dmat%ut)) nullify(dmat%ut)
@@ -426,10 +408,12 @@ module sparse_ir
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
         complex(kind(0d0)), PARAMETER :: ci  = (0.0d0, 1.0d0)
-        double precision, PARAMETER :: pi = 4.0d0*ATAN(1.0d0)
+        double precision :: PI
         complex(kind(0d0)) :: cfreq
         complex(kind(0d0)) :: kernel
         integer :: nfreq, nf, p, n, l1, l2
+        !
+        PI =4.D0*DATAN(1.D0)
         !
         nfreq = size(freq)
         nf = size(res, 2)
@@ -460,10 +444,12 @@ module sparse_ir
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
         complex(kind(0d0)), PARAMETER :: ci  = (0.0d0, 1.0d0)
-        double precision, PARAMETER :: pi = 4.0d0*ATAN(1.0d0)
+        double precision :: PI
         complex(kind(0d0)) :: cfreq
         complex(kind(0d0)) :: kernel
         integer :: nfreq, nf, p, n, l1, l2
+        !
+        PI =4.D0*DATAN(1.D0)
         !
         nfreq = size(freq)
         nf = size(res, 2)
