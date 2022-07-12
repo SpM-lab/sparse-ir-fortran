@@ -473,5 +473,39 @@ module sparse_ir
         end do
         !
     end subroutine
+    
+    subroutine system_mem_usage(valueRSS)
+#if defined (__INTEL)
+        use ifport !if on intel compiler
+#endif
+        character(len=30) :: count_char,pid_char, dummy
+        character(len=200) :: filename
+        character(len=200) :: command
+        integer :: count,pid,res
+        character(len=50), intent(out) :: valueRSS
+        
+        call system_clock(count)
+        
+        pid=getpid()
+        
+        write(count_char,'(I10)') count
+        write(pid_char,'(I10)') pid
+        
+        filename='~/tmp/mem_use.'//trim(count_char)
+        
+        command='cat /proc/'//trim(adjustl(pid_char))//'/status >'//trim(adjustl(filename))
+        
+        res=system(command)
+        
+        command='cat '//trim(adjustl(filename))//' | grep RSS > ~/tmp/rss_use.'//trim(count_char)
+        
+        res=system(command)
+        
+        open(unit=100, file='~/tmp/rss_use.'//trim(count_char))
+        read(100,*) dummy, valueRSS
+        close(100)
+        
+        return
+    end subroutine
 
 end module
