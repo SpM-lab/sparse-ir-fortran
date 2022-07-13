@@ -162,7 +162,7 @@ program main
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
 
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
 
@@ -242,7 +242,7 @@ program main
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
     ! fermion
@@ -341,7 +341,7 @@ program main
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
     ! boson
@@ -440,7 +440,7 @@ program main
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
 end program

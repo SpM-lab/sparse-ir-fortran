@@ -3,9 +3,10 @@ module sparse_ir
 
     ! Matrix decomposed in SVD for fitting
     type DecomposedMatrix
-        complex(kind(0d0)), pointer :: a(:, :) ! Original matrix
-        double precision, pointer :: inv_s(:) ! Inverse of singular values
-        complex(kind(0d0)), pointer :: ut(:, :), v(:, :)
+        complex(kind(0d0)), allocatable :: a(:, :) ! Original matrix
+        double precision, allocatable :: inv_s_dl(:) ! Inverse of dimensionless singular values
+        double precision, allocatable :: inv_s(:) ! Inverse of singular values
+        complex(kind(0d0)), allocatable :: ut(:, :), v(:, :)
         integer :: m, n, ns
     end type
 
@@ -13,12 +14,12 @@ module sparse_ir
     type IR
         integer :: size, ntau, nfreq_f, nfreq_b, nomega
         double precision :: beta, lambda, wmax, eps, eps_svd
-        double precision, pointer :: s(:), tau(:), x(:)
-        double precision, pointer :: omega(:), y(:)
-        integer, pointer :: freq_f(:), freq_b(:)
-        complex(kind(0d0)), pointer :: u_data(:,:)
-        complex(kind(0d0)), pointer :: uhat_f_data(:,:), uhat_b_data(:,:)
-        complex(kind(0d0)), pointer :: v_data(:,:), spr_data(:,:)
+        double precision, allocatable :: s(:), tau(:), x(:)
+        double precision, allocatable :: omega(:), y(:)
+        integer, allocatable :: freq_f(:), freq_b(:)
+        complex(kind(0d0)), allocatable :: u_data(:,:)
+        complex(kind(0d0)), allocatable :: uhat_f_data(:,:), uhat_b_data(:,:)
+        complex(kind(0d0)), allocatable :: v_data(:,:), spr_data(:,:)
         type(DecomposedMatrix) :: u
         type(DecomposedMatrix) :: uhat_f, uhat_b
         type(DecomposedMatrix) :: spr
@@ -31,6 +32,10 @@ module sparse_ir
         double precision, intent(in) :: beta, lambda, eps, s(:), x(:), y(:), eps_svd
         complex(kind(0d0)), intent(in) :: u(:,:), uhat_f(:, :), uhat_b(:, :), v(:, :), spr(:, :)
         integer, intent(in) :: freq_f(:), freq_b(:)
+
+        if (allocated(obj%x)) then
+            stop 'IR%x is already allocated. You should call finalize_ir before recalling init_ir.'
+        end if
 
         obj%size = size(s)
         obj%ntau = size(x)
@@ -75,6 +80,11 @@ module sparse_ir
         allocate(obj%spr_data(obj%size, obj%nomega))
         obj%spr_data = transpose(spr)
 
+        obj%u = decompose(obj%u_data, obj%eps_svd)
+        obj%uhat_f = decompose(obj%uhat_f_data, obj%eps_svd)
+        obj%uhat_b = decompose(obj%uhat_b_data, obj%eps_svd)
+        obj%spr = decompose2(obj%spr_data, obj%eps_svd)
+
         ! Here we define basis sets for the input value of beta. 
         call set_beta(obj, beta)
     end subroutine
@@ -89,42 +99,44 @@ module sparse_ir
         obj%tau = 5.0d-1 * beta * (obj%x + 1.d0)
         obj%omega = obj%y * obj%wmax
 
-        obj%u = decompose(sqrt(2.0d0/beta)*obj%u_data, obj%eps_svd)
-        obj%uhat_f = decompose(sqrt(beta) * obj%uhat_f_data, obj%eps_svd)
-        obj%uhat_b = decompose(sqrt(beta) * obj%uhat_b_data, obj%eps_svd)
-        obj%spr = decompose2(sqrt(5.0d-1*beta)*obj%spr_data, obj%eps_svd)
+        obj%u%inv_s(:) = sqrt(5.0d-1*beta) * obj%u%inv_s_dl(:)
+        obj%uhat_f%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_f%inv_s_dl(:)
+        obj%uhat_b%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_b%inv_s_dl(:)
+        obj%spr%inv_s(:) = sqrt(2.0d0 / beta) * obj%spr%inv_s_dl(:)
+
     end subroutine
 
-    !subroutine finalize_ir(obj)
-    !    type(IR) :: obj
-    !
-    !    if (associated(obj%x)) nullify(obj%x)
-    !    if (associated(obj%tau)) nullify(obj%tau)
-    !    if (associated(obj%s)) nullify(obj%s)
-    !    if (associated(obj%freq_f)) nullify(obj%freq_f)
-    !    if (associated(obj%freq_b)) nullify(obj%freq_b)
-    !    if (associated(obj%u_data)) nullify(obj%u_data)
-    !    if (associated(obj%uhat_f_data)) nullify(obj%uhat_f_data)
-    !    if (associated(obj%uhat_b_data)) nullify(obj%uhat_b_data)
-    !    if (associated(obj%y)) nullify(obj%y)
-    !    if (associated(obj%omega)) nullify(obj%omega)
-    !    if (associated(obj%v_data)) nullify(obj%v_data)
-    !    if (associated(obj%spr_data)) nullify(obj%spr_data)
-    !
-    !    call finalize_dmat(obj%u)
-    !    call finalize_dmat(obj%uhat_f)
-    !    call finalize_dmat(obj%uhat_b)
-    !    call finalize_dmat(obj%spr)
-    !end subroutine
+    subroutine finalize_ir(obj)
+        type(IR) :: obj
+    
+        if (allocated(obj%x)) deallocate(obj%x)
+        if (allocated(obj%tau)) deallocate(obj%tau)
+        if (allocated(obj%s)) deallocate(obj%s)
+        if (allocated(obj%freq_f)) deallocate(obj%freq_f)
+        if (allocated(obj%freq_b)) deallocate(obj%freq_b)
+        if (allocated(obj%u_data)) deallocate(obj%u_data)
+        if (allocated(obj%uhat_f_data)) deallocate(obj%uhat_f_data)
+        if (allocated(obj%uhat_b_data)) deallocate(obj%uhat_b_data)
+        if (allocated(obj%y)) deallocate(obj%y)
+        if (allocated(obj%omega)) deallocate(obj%omega)
+        if (allocated(obj%v_data)) deallocate(obj%v_data)
+        if (allocated(obj%spr_data)) deallocate(obj%spr_data)
+    
+        call finalize_dmat(obj%u)
+        call finalize_dmat(obj%uhat_f)
+        call finalize_dmat(obj%uhat_b)
+        call finalize_dmat(obj%spr)
+    end subroutine
 
-    !subroutine finalize_dmat(dmat)
-    !    type(DecomposedMatrix) :: dmat
-    !
-    !    if (associated(dmat%a)) nullify(dmat%a)
-    !    if (associated(dmat%inv_s)) nullify(dmat%inv_s)
-    !    if (associated(dmat%ut)) nullify(dmat%ut)
-    !    if (associated(dmat%v)) nullify(dmat%v)
-    !end subroutine
+    subroutine finalize_dmat(dmat)
+        type(DecomposedMatrix) :: dmat
+    
+        if (allocated(dmat%a)) deallocate(dmat%a)
+        if (allocated(dmat%inv_s)) deallocate(dmat%inv_s)
+        if (allocated(dmat%inv_s)) deallocate(dmat%inv_s_dl)
+        if (allocated(dmat%ut)) deallocate(dmat%ut)
+        if (allocated(dmat%v)) deallocate(dmat%v)
+    end subroutine
 
     ! SVD of matrix a. Singular values smaller than eps * the largest one are dropped.
     function decompose(a, eps) result(dmat)
@@ -137,6 +149,10 @@ module sparse_ir
         double precision, allocatable :: rwork(:), s(:)
         integer, allocatable :: iwork(:)
         type(DecomposedMatrix)::dmat
+
+        if (allocated(dmat%a)) then
+            stop 'DMAT%a is already allocated. You should call finalize_dmat before recalling decompose.'
+        end if
 
         m = size(a, 1)
         n = size(a, 2)
@@ -165,12 +181,13 @@ module sparse_ir
         end do
 
         allocate(dmat%a(m, n))
+        allocate(dmat%inv_s_dl(ns))
         allocate(dmat%inv_s(ns))
         allocate(dmat%ut(ns, m))
         allocate(dmat%v(n, ns))
 
         dmat%a = a
-        dmat%inv_s(1:ns) = 1.0D0 / s(1:ns)
+        dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
         dmat%ut(1:ns, 1:m) = conjg(transpose(u(1:m, 1:ns)))
         dmat%v(1:n, 1:ns) = conjg(transpose(vt(1:ns, 1:n)))
         dmat%m = size(a, 1)
@@ -190,6 +207,10 @@ module sparse_ir
             vt(:, :), work(:)
         double precision, allocatable :: rwork(:), s(:)
         type(DecomposedMatrix)::dmat
+
+        if (allocated(dmat%a)) then
+            stop 'DMAT%a is already allocated. You should call finalize_dmat before recalling decompose2.'
+        end if
     
         m = size(a, 1)
         n = size(a, 2)
@@ -218,12 +239,13 @@ module sparse_ir
         end do
     
         allocate(dmat%a(m, n))
+        allocate(dmat%inv_s_dl(ns))
         allocate(dmat%inv_s(ns))
         allocate(dmat%ut(ns, m))
         allocate(dmat%v(n, ns))
-    
+
         dmat%a = a
-        dmat%inv_s(1:ns) = 1.0D0 / s(1:ns)
+        dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
         dmat%ut(1:ns, 1:m) = conjg(transpose(u(1:m, 1:ns)))
         dmat%v(1:n, 1:ns) = conjg(transpose(vt(1:ns, 1:n)))
         dmat%m = size(a, 1)
