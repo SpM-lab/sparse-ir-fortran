@@ -95,36 +95,36 @@ module sparse_ir
         obj%spr = decompose2(sqrt(5.0d-1*beta)*obj%spr_data, obj%eps_svd)
     end subroutine
 
-    subroutine finalize_ir(obj)
-        type(IR) :: obj
+    !subroutine finalize_ir(obj)
+    !    type(IR) :: obj
+    !
+    !    if (associated(obj%x)) nullify(obj%x)
+    !    if (associated(obj%tau)) nullify(obj%tau)
+    !    if (associated(obj%s)) nullify(obj%s)
+    !    if (associated(obj%freq_f)) nullify(obj%freq_f)
+    !    if (associated(obj%freq_b)) nullify(obj%freq_b)
+    !    if (associated(obj%u_data)) nullify(obj%u_data)
+    !    if (associated(obj%uhat_f_data)) nullify(obj%uhat_f_data)
+    !    if (associated(obj%uhat_b_data)) nullify(obj%uhat_b_data)
+    !    if (associated(obj%y)) nullify(obj%y)
+    !    if (associated(obj%omega)) nullify(obj%omega)
+    !    if (associated(obj%v_data)) nullify(obj%v_data)
+    !    if (associated(obj%spr_data)) nullify(obj%spr_data)
+    !
+    !    call finalize_dmat(obj%u)
+    !    call finalize_dmat(obj%uhat_f)
+    !    call finalize_dmat(obj%uhat_b)
+    !    call finalize_dmat(obj%spr)
+    !end subroutine
 
-        if (associated(obj%x)) nullify(obj%x)
-        if (associated(obj%tau)) nullify(obj%tau)
-        if (associated(obj%s)) nullify(obj%s)
-        if (associated(obj%freq_f)) nullify(obj%freq_f)
-        if (associated(obj%freq_b)) nullify(obj%freq_b)
-        if (associated(obj%u_data)) nullify(obj%u_data)
-        if (associated(obj%uhat_f_data)) nullify(obj%uhat_f_data)
-        if (associated(obj%uhat_b_data)) nullify(obj%uhat_b_data)
-        if (associated(obj%y)) nullify(obj%y)
-        if (associated(obj%omega)) nullify(obj%omega)
-        if (associated(obj%v_data)) nullify(obj%v_data)
-        if (associated(obj%spr_data)) nullify(obj%spr_data)
-
-        call finalize_dmat(obj%u)
-        call finalize_dmat(obj%uhat_f)
-        call finalize_dmat(obj%uhat_b)
-        call finalize_dmat(obj%spr)
-    end subroutine
-
-    subroutine finalize_dmat(dmat)
-        type(DecomposedMatrix) :: dmat
-           
-        if (associated(dmat%a)) nullify(dmat%a)
-        if (associated(dmat%inv_s)) nullify(dmat%inv_s)
-        if (associated(dmat%ut)) nullify(dmat%ut)
-        if (associated(dmat%v)) nullify(dmat%v)
-    end subroutine
+    !subroutine finalize_dmat(dmat)
+    !    type(DecomposedMatrix) :: dmat
+    !
+    !    if (associated(dmat%a)) nullify(dmat%a)
+    !    if (associated(dmat%inv_s)) nullify(dmat%inv_s)
+    !    if (associated(dmat%ut)) nullify(dmat%ut)
+    !    if (associated(dmat%v)) nullify(dmat%v)
+    !end subroutine
 
     ! SVD of matrix a. Singular values smaller than eps * the largest one are dropped.
     function decompose(a, eps) result(dmat)
