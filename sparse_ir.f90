@@ -188,6 +188,8 @@ module sparse_ir
 
         dmat%a = a
         dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
+        ! inv_s temporarily stores the same data of inv_s_dl
+        dmat%inv_s(1:ns) = dmat%inv_s_dl(1:ns)
         dmat%ut(1:ns, 1:m) = conjg(transpose(u(1:m, 1:ns)))
         dmat%v(1:n, 1:ns) = conjg(transpose(vt(1:ns, 1:n)))
         dmat%m = size(a, 1)
@@ -246,6 +248,8 @@ module sparse_ir
 
         dmat%a = a
         dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
+        ! inv_s temporarily stores the same data of inv_s_dl
+        dmat%inv_s(1:ns) = dmat%inv_s_dl(1:ns)
         dmat%ut(1:ns, 1:m) = conjg(transpose(u(1:m, 1:ns)))
         dmat%v(1:n, 1:ns) = conjg(transpose(vt(1:ns, 1:n)))
         dmat%m = size(a, 1)
