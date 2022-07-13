@@ -191,6 +191,7 @@ module sparse_ir
         allocate(dmat%ut(ns, m))
         allocate(dmat%v(n, ns))
 
+        ! dmat%a temporarily stores the same data of input a
         dmat%a = a
         dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
         ! inv_s temporarily stores the same data of inv_s_dl
@@ -251,6 +252,7 @@ module sparse_ir
         allocate(dmat%ut(ns, m))
         allocate(dmat%v(n, ns))
 
+        ! dmat%a temporarily stores the same data of input a
         dmat%a = a
         dmat%inv_s_dl(1:ns) = 1.0D0 / s(1:ns)
         ! inv_s temporarily stores the same data of inv_s_dl
