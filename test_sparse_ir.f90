@@ -39,6 +39,7 @@ program main
         end if
         !write(*, *) y
         !write(*, *) y_reconst
+        call finalize_dmat(dm)
     end subroutine
 
     subroutine test_over_fitting()
@@ -58,6 +59,7 @@ program main
         if (maxval(abs(y - y_reconst)) > 1e-12) then
             stop "y and y_reconst do not match!"
         end if
+        call finalize_dmat(dm)
     end subroutine
 
 
@@ -84,6 +86,7 @@ program main
         if (maxval(abs(y - y_reconst)) > 1e-12) then
             stop "y and y_reconst do not match!"
         end if
+        call finalize_dmat(dm)
     end subroutine
 
 
