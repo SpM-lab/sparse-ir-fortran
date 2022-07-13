@@ -99,6 +99,11 @@ module sparse_ir
         obj%tau = 5.0d-1 * beta * (obj%x + 1.d0)
         obj%omega = obj%y * obj%wmax
 
+        obj%u%a(:, :) = sqrt(2.0d0/beta)*obj%u_data(:, :)
+        obj%uhat_f%a(:, :) = sqrt(beta) * obj%uhat_f_data(:, :)
+        obj%uhat_b%a(:, :) = sqrt(beta) * obj%uhat_b_data(:, :)
+        obj%spr%a(:, :) = sqrt(5.0d-1*beta)*obj%spr_data(:, :)
+
         obj%u%inv_s(:) = sqrt(5.0d-1*beta) * obj%u%inv_s_dl(:)
         obj%uhat_f%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_f%inv_s_dl(:)
         obj%uhat_b%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_b%inv_s_dl(:)
@@ -418,9 +423,21 @@ module sparse_ir
         do t = 1, ntau
             do p = 1, obj%nomega
                 if (obj%omega(p) < 0) then
-                    kernel = exp( (obj%beta - tau(t)) * obj%omega(p)) / (exp(obj%beta * obj%omega(p)) + 1.0d0) 
+                    if ( (obj%beta - tau(t)) * obj%omega(p) < -100.d0) then
+                        kernel = 0.0d0
+                    else if (obj%beta * obj%omega(p) < -30.d0) then
+                        kernel = exp( (obj%beta - tau(t)) * obj%omega(p))
+                    else
+                        kernel = exp( (obj%beta - tau(t)) * obj%omega(p)) / (exp(obj%beta * obj%omega(p)) + 1.0d0) 
+                    end if
                 else
-                    kernel = exp(- tau(t) * obj%omega(p)) / (1.0d0 + exp(- obj%beta * obj%omega(p))) 
+                    if (tau(t) * obj%omega(p) > 100.d0) then
+                        kernel = 0.0d0
+                    else if (obj%beta * obj%omega(p) > 30.d0) then
+                        kernel = exp(- tau(t) * obj%omega(p))
+                    else
+                        kernel = exp(- tau(t) * obj%omega(p)) / (1.0d0 + exp(- obj%beta * obj%omega(p))) 
+                    end if
                 end if
                 res(:, t) = res(:, t) - kernel * arr(:, p)
             end do
