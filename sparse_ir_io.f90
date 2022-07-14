@@ -36,11 +36,12 @@ module sparse_ir_io
 
         double precision :: lambda, eps
         double precision, parameter :: rtol = 1e-20
-        integer :: size, ntau, nfreq_f, nfreq_b
-        double precision, allocatable :: s(:), tau(:)
+        integer :: size, ntau, nfreq_f, nfreq_b, nomega
+        double precision, allocatable :: s(:), tau(:), omega(:)
         integer, allocatable :: freq_f(:), freq_b(:)
         complex(kind(0d0)), allocatable :: u(:, :)
         complex(kind(0d0)), allocatable :: uhat_f(:, :), uhat_b(:, :)
+        complex(kind(0d0)), allocatable :: v(:, :), spr(:, :)
 
         read(unit,*) tmp_str, lambda
         read(unit,*) tmp_str, eps
@@ -105,9 +106,29 @@ module sparse_ir_io
             end do
         end do
 
-        call init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, 1d-16)
+        ! Sampling poles on real frequencies
+        read(unit,*)
+        read(unit,*) nomega
+        allocate(omega(nomega))
+        do i=1, nomega
+            read(unit, *) omega(i)
+        end do
 
-        deallocate(u, uhat_f, uhat_b)
+        ! Right singular functions on sampling poles
+        read(unit,*)
+        allocate(v(nomega, size))
+        allocate(spr(nomega, size))
+        do l = 1, size
+            do i = 1, nomega
+                read(unit, *) rtmp
+                v(i, l) = rtmp
+                spr(i, l) = - s(l) * v(i, l)
+            end do
+        end do
+
+        call init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, omega, v, spr, 1d-16)
+
+        deallocate(u, uhat_f, uhat_b, v, spr)
     end function
 
 end module

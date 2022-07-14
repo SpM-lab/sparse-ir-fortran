@@ -5,8 +5,8 @@ on:
   - pull_request
 
 jobs:
-  build:
-    name: Run Fortran tests
+  build1:
+    name: Tests for GNU compiler + OpenBLAS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,14 +14,40 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install dependencies
         run: |
-            sudo apt-get --yes install ccache
-            sudo apt-get update -q -y
-            sudo apt-get install -y libopenblas-base libopenblas-dev
-            pip3 install sparse-ir xprec
-
+          sudo apt-get --yes install ccache
+          sudo apt-get update -q -y
+          sudo apt-get install -y libopenblas-base libopenblas-dev
+          pip3 install sparse-ir xprec
       - name: Test fortran interface
         run: |
           cp Makefile.gfortran_openblas Makefile
+          pwd
+          ls -l
+          ./runtest.sh
+
+  build2:
+    name: Tests for Intel compiler + Intel MKL
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Set up repo
+        run: |
+          wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt-get update
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y intel-oneapi-common-vars
+          sudo apt-get install -y intel-oneapi-compiler-fortran
+          sudo apt-get install -y intel-oneapi-mkl-devel
+          source /opt/intel/oneapi/setvars.sh
+          printenv >> $GITHUB_ENV
+          pip3 install sparse-ir xprec
+      - name: "Test fortran interface"
+        run: |
+          cp Makefile.ifort_mkl Makefile
           pwd
           ls -l
           ./runtest.sh
