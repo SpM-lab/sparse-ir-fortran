@@ -1,8 +1,9 @@
-FC = gfortran
+FC = ifort
 
-LDLIBS = -lblas -llapack
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu
-F90FLAGS = -std=f2003 -Wall -fbounds-check -g -fcheck=array-temps,bounds,do,mem,pointer,recursion
+LDLIBS = -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
+#LDLIBS = -mkl=sequential
+LDFLAGS = -static-intel
+F90FLAGS = -O2 -g -traceback
 
 TARGET = test_sparse_ir
 OBJS = test_sparse_ir.o sparse_ir.o sparse_ir_io.o sparse_ir_preset.o

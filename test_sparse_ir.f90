@@ -39,6 +39,7 @@ program main
         end if
         !write(*, *) y
         !write(*, *) y_reconst
+        call finalize_dmat(dm)
     end subroutine
 
     subroutine test_over_fitting()
@@ -58,6 +59,7 @@ program main
         if (maxval(abs(y - y_reconst)) > 1e-12) then
             stop "y and y_reconst do not match!"
         end if
+        call finalize_dmat(dm)
     end subroutine
 
 
@@ -84,6 +86,7 @@ program main
         if (maxval(abs(y - y_reconst)) > 1e-12) then
             stop "y and y_reconst do not match!"
         end if
+        call finalize_dmat(dm)
     end subroutine
 
 
@@ -162,7 +165,7 @@ program main
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
 
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
 
@@ -242,7 +245,7 @@ program main
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
     ! fermion
@@ -341,7 +344,7 @@ program main
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
     ! boson
@@ -440,7 +443,7 @@ program main
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
         deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
         
-        !call finalize_ir(ir_obj)
+        call finalize_ir(ir_obj)
     end subroutine
 
 end program
