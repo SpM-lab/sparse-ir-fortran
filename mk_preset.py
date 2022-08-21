@@ -10,22 +10,31 @@ NLINE = MAX_CONTINUATION_LINE - 2
 
 class BasisInfo:
     def __init__(self, nlambda: int, ndigit: int) -> None:
+        beta = 1.0
         lambda_ = 10.0 ** nlambda
+        wmax = lambda_/beta
         eps = 1/10.0 ** ndigit
-        kernel = sparse_ir.LogisticKernel(lambda_)
-        sve_result = sparse_ir.compute_sve(kernel, eps)
+    
+        #kernel = sparse_ir.LogisticKernel(lambda_)
+        #sve_result = sparse_ir.compute_sve(kernel, eps)
+        #self.basis_f = sparse_ir.DimensionlessBasis("F", lambda_, eps, kernel=kernel, sve_result=sve_result)
+        #self.basis_b = sparse_ir.DimensionlessBasis("B", lambda_, eps, kernel=kernel, sve_result=sve_result)
 
-        self.basis_f = sparse_ir.DimensionlessBasis("F", lambda_, eps, kernel=kernel, sve_result=sve_result)
-        self.basis_b = sparse_ir.DimensionlessBasis("B", lambda_, eps, kernel=kernel, sve_result=sve_result)
-        self.s = self.basis_f.s
+        basis = sparse_ir.FiniteTempBasisSet(1.0, lambda_, eps)
+        self.basis_f = basis.basis_f
+        self.basis_b = basis.basis_b
+        self.s = self.basis_f.s / np.sqrt(0.5 * lambda_)
+
         self.size = self.s.size
 
         # Sampling points:
         #   Add tau = 0, beta to sampling points (for Matsubara summation)
-        self.tau = np.unique(np.hstack([-1, self.basis_f.default_tau_sampling_points(), 1]))
+        self.tau = np.unique(np.hstack([0, self.basis_f.default_tau_sampling_points(), beta]))
+        self.x = 2 * self.tau/beta - 1
         self.freq_f = self.basis_f.default_matsubara_sampling_points()
         self.freq_b = self.basis_b.default_matsubara_sampling_points()
-        self.omega = np.unique(np.hstack([-1, self.basis_f.default_omega_sampling_points(), 1]))
+        self.omega = np.unique(np.hstack([-wmax, self.basis_f.default_omega_sampling_points(), wmax]))
+        self.y = self.omega/wmax
         self.ntau = self.tau.size
         self.nfreq_f = self.freq_f.size
         self.nfreq_b = self.freq_b.size
@@ -36,10 +45,10 @@ class BasisInfo:
         self.nomega_reduced = self.nomega //2 + 1
 
         # Transformation matrix
-        self.u = self.basis_f.u(self.tau).T
-        self.uhat_f = self.basis_f.uhat(self.freq_f).T
-        self.uhat_b = self.basis_b.uhat(self.freq_b).T
-        self.v = self.basis_f.v(self.omega).T
+        self.u = np.sqrt(0.5 * beta) * self.basis_f.u(self.tau).T
+        self.uhat_f = (1/np.sqrt(beta)) * self.basis_f.uhat(self.freq_f).T
+        self.uhat_b = (1/np.sqrt(beta)) * self.basis_b.uhat(self.freq_b).T
+        self.v = np.sqrt(wmax) * self.basis_f.v(self.omega).T
 
 
 def _str(value):
@@ -218,10 +227,10 @@ f"""
     )
 
     print_vector_data(b.s, f"s_{sig}")
-    print_vector_data(b.tau, f"tau_{sig}")
+    print_vector_data(b.x, f"tau_{sig}")
     print_vector_data(b.freq_f, f"freq_f_{sig}")
     print_vector_data(b.freq_b, f"freq_b_{sig}")
-    print_vector_data(b.omega, f"omega_{sig}")
+    print_vector_data(b.y, f"omega_{sig}")
 
     print_vector_data(b.u[0:b.ntau_reduced,:], f"u_r_{sig}")
     print_vector_data((b.uhat_f.real + b.uhat_f.imag)[0:b.nfreq_f_reduced,:], f"uhat_f_r_{sig}")
