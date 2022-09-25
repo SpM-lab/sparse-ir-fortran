@@ -9,12 +9,12 @@ program main
     call test_over_fitting()
     call test_fermion(.true.)
     call test_boson(.true.)
-    call test_fermion_spr(.true.)
-    call test_boson_spr(.true.)
+    call test_fermion_dlr(.true.)
+    call test_boson_dlr(.true.)
     call test_fermion(.false.)
     call test_boson(.false.)
-    call test_fermion_spr(.false.)
-    call test_boson_spr(.false.)
+    call test_fermion_dlr(.false.)
+    call test_boson_dlr(.false.)
 
     contains
 
@@ -155,6 +155,7 @@ program main
 
         call evaluate_matsubara_f(ir_obj, gl_matsu, giv_reconst)
         if (maxval(abs(giv - giv_reconst)) > 1d2*eps) then
+            write(*, *) "C"
             stop "giv do not match!"
         end if
 
@@ -235,6 +236,7 @@ program main
 
         call evaluate_matsubara_b(ir_obj, gl_matsu, giv_reconst)
         if (maxval(abs(giv - giv_reconst)) > 1d2*eps) then
+            write(*, *) "A"
             stop "gtau do not match!"
         end if
 
@@ -249,7 +251,7 @@ program main
     end subroutine
 
     ! fermion
-    subroutine test_fermion_spr(preset)
+    subroutine test_fermion_dlr(preset)
         logical, intent(in) :: preset
         type(IR) :: ir_obj
         integer, parameter :: ndigit = 10, nlambda = 4
@@ -259,10 +261,10 @@ program main
 
         double precision, parameter :: beta = lambda/wmax, omega0 = 1.d0/beta
         double precision, parameter :: eps = 1.d-1**ndigit
-        integer, parameter :: ntau_spr = 200, nfreq_spr = 200
+        integer, parameter :: ntau_dlr = 200, nfreq_dlr = 200
 
         complex(kind(0d0)),allocatable :: giv_smpl(:,:), gl_matsu(:, :), gl_tau(:, :), gtau_smpl(:, :), &
-            gtau_reconst(:, :), giv_reconst(:, :), g_spr(:, :), giv_ref(:,:), gtau_ref(:,:)
+            gtau_reconst(:, :), giv_reconst(:, :), g_dlr(:, :), giv_ref(:,:), gtau_ref(:,:)
         integer, allocatable :: freq(:) 
         double precision, allocatable :: tau(:)
         integer n, t
@@ -291,13 +293,13 @@ program main
         allocate(gtau_smpl(1, ir_obj%ntau))
         allocate(gl_matsu(1, ir_obj%size))
         allocate(gl_tau(1, ir_obj%size))
-        allocate(g_spr(1, ir_obj%nomega))
-        allocate(giv_ref(1, nfreq_spr))
-        allocate(gtau_ref(1, ntau_spr))
-        allocate(gtau_reconst(1, ntau_spr))
-        allocate(giv_reconst(1, nfreq_spr))
-        allocate(freq(nfreq_spr))
-        allocate(tau(ntau_spr))
+        allocate(g_dlr(1, ir_obj%nomega))
+        allocate(giv_ref(1, nfreq_dlr))
+        allocate(gtau_ref(1, ntau_dlr))
+        allocate(gtau_reconst(1, ntau_dlr))
+        allocate(giv_reconst(1, nfreq_dlr))
+        allocate(freq(nfreq_dlr))
+        allocate(tau(ntau_dlr))
 
         ! From Matsubara
         do n = 1, ir_obj%nfreq_f
@@ -319,36 +321,37 @@ program main
             stop "gl_matsu and gl_tau do not match!"
         end if
 
-        call to_spr (ir_obj, gl_matsu, g_spr) 
+        call to_dlr (ir_obj, gl_matsu, g_dlr) 
 
-        do n = 1, nfreq_spr
-            freq(n) = -nfreq_spr + 2 * (n) - 1
+        do n = 1, nfreq_dlr
+            freq(n) = -nfreq_dlr + 2 * (n) - 1
             giv_ref(1, n) = 1.d0/(cmplx(0d0, PI*freq(n)/beta, kind(0d0)) - omega0)
         end do
 
-        call evaluate_matsubara_f_from_spr(ir_obj, freq, g_spr, giv_reconst)
+        call evaluate_matsubara_f_from_dlr(ir_obj, freq, g_dlr, giv_reconst)
         if (maxval(abs(giv_ref - giv_reconst)) > 1d3*eps) then
+            write(*, *) "AAAA"
             stop "giv do not match!"
         end if
 
-        do n = 1, ntau_spr
-            tau(n) = beta * DBLE(n) / DBLE(ntau_spr + 1)
+        do n = 1, ntau_dlr
+            tau(n) = beta * DBLE(n) / DBLE(ntau_dlr + 1)
             gtau_ref(1, n) = - exp(-tau(n) * omega0)/(1.d0 + exp(-beta * omega0))
         end do
 
-        call evaluate_tau_from_spr(ir_obj, tau, g_spr, gtau_reconst)
+        call evaluate_tau_from_dlr(ir_obj, tau, g_dlr, gtau_reconst)
         if (maxval(abs(gtau_ref - gtau_reconst)) > 1d3*eps) then
             stop "gtau do not match!"
         end if
 
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
-        deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
+        deallocate(giv_ref, gtau_ref, g_dlr, freq, tau)
         
         call finalize_ir(ir_obj)
     end subroutine
 
     ! boson
-    subroutine test_boson_spr(preset)
+    subroutine test_boson_dlr(preset)
         logical, intent(in) :: preset
         type(IR) :: ir_obj
         integer, parameter :: ndigit = 10, nlambda = 4
@@ -358,10 +361,10 @@ program main
 
         double precision, parameter :: beta = lambda/wmax, omega0 = 1.d0/beta
         double precision, parameter :: eps = 1.d-1**ndigit
-        integer, parameter :: ntau_spr = 200, nfreq_spr = 200
+        integer, parameter :: ntau_dlr = 200, nfreq_dlr = 200
 
         complex(kind(0d0)),allocatable :: giv_smpl(:,:), gl_matsu(:, :), gl_tau(:, :), gtau_smpl(:, :), &
-            gtau_reconst(:, :), giv_reconst(:, :), g_spr(:, :), giv_ref(:,:), gtau_ref(:,:)
+            gtau_reconst(:, :), giv_reconst(:, :), g_dlr(:, :), giv_ref(:,:), gtau_ref(:,:)
         integer, allocatable :: freq(:) 
         double precision, allocatable :: tau(:)
         integer n, t
@@ -390,13 +393,13 @@ program main
         allocate(gtau_smpl(1, ir_obj%ntau))
         allocate(gl_matsu(1, ir_obj%size))
         allocate(gl_tau(1, ir_obj%size))
-        allocate(g_spr(1, ir_obj%nomega))
-        allocate(giv_ref(1, nfreq_spr))
-        allocate(gtau_ref(1, ntau_spr))
-        allocate(gtau_reconst(1, ntau_spr))
-        allocate(giv_reconst(1, nfreq_spr))
-        allocate(freq(nfreq_spr))
-        allocate(tau(ntau_spr))
+        allocate(g_dlr(1, ir_obj%nomega))
+        allocate(giv_ref(1, nfreq_dlr))
+        allocate(gtau_ref(1, ntau_dlr))
+        allocate(gtau_reconst(1, ntau_dlr))
+        allocate(giv_reconst(1, nfreq_dlr))
+        allocate(freq(nfreq_dlr))
+        allocate(tau(ntau_dlr))
 
         ! From Matsubara
         do n = 1, ir_obj%nfreq_b
@@ -418,30 +421,31 @@ program main
             stop "gl_matsu and gl_tau do not match!"
         end if
 
-        call to_spr (ir_obj, gl_matsu, g_spr) 
+        call to_dlr (ir_obj, gl_matsu, g_dlr) 
 
-        do n = 1, nfreq_spr
-            freq(n) = -nfreq_spr + 2 * (n)
+        do n = 1, nfreq_dlr
+            freq(n) = -nfreq_dlr + 2 * (n)
             giv_ref(1, n) = 1.d0/(cmplx(0d0, PI*freq(n)/beta, kind(0d0)) - omega0)
         end do
 
-        call evaluate_matsubara_b_from_spr(ir_obj, freq, g_spr, giv_reconst)
+        call evaluate_matsubara_b_from_dlr(ir_obj, freq, g_dlr, giv_reconst)
         if (maxval(abs(giv_ref - giv_reconst)) > 1d3*eps) then
+            write(*, *) "B"
             stop "giv do not match!"
         end if
 
-        do n = 1, ntau_spr
-            tau(n) = beta * DBLE(n) / DBLE(ntau_spr + 1)
+        do n = 1, ntau_dlr
+            tau(n) = beta * DBLE(n) / DBLE(ntau_dlr + 1)
             gtau_ref(1, n) = - exp(-tau(n) * omega0)/(1.d0 - exp(-beta * omega0))
         end do
 
-        call evaluate_tau_from_spr(ir_obj, tau, g_spr, gtau_reconst)
+        call evaluate_tau_from_dlr(ir_obj, tau, g_dlr, gtau_reconst)
         if (maxval(abs(gtau_ref - gtau_reconst)) > 1d3*eps) then
             stop "gtau do not match!"
         end if
 
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
-        deallocate(giv_ref, gtau_ref, g_spr, freq, tau)
+        deallocate(giv_ref, gtau_ref, g_dlr, freq, tau)
         
         call finalize_ir(ir_obj)
     end subroutine

@@ -41,7 +41,7 @@ module sparse_ir_io
         integer, allocatable :: freq_f(:), freq_b(:)
         complex(kind(0d0)), allocatable :: u(:, :)
         complex(kind(0d0)), allocatable :: uhat_f(:, :), uhat_b(:, :)
-        complex(kind(0d0)), allocatable :: v(:, :), spr(:, :)
+        complex(kind(0d0)), allocatable :: v(:, :), dlr(:, :)
 
         read(unit,*) tmp_str, lambda
         read(unit,*) tmp_str, eps
@@ -117,18 +117,18 @@ module sparse_ir_io
         ! Right singular functions on sampling poles
         read(unit,*)
         allocate(v(nomega, size))
-        allocate(spr(nomega, size))
+        allocate(dlr(nomega, size))
         do l = 1, size
             do i = 1, nomega
                 read(unit, *) rtmp
                 v(i, l) = rtmp
-                spr(i, l) = - s(l) * v(i, l)
+                dlr(i, l) = - s(l) * v(i, l)
             end do
         end do
 
-        call init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, omega, v, spr, 1d-16)
+        call init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, omega, v, dlr, 1d-16)
 
-        deallocate(u, uhat_f, uhat_b, v, spr)
+        deallocate(u, uhat_f, uhat_b, v, dlr)
     end function
 
 end module
