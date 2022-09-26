@@ -70,15 +70,16 @@ def run():
         
         print(f"# sampling poles", file=f)
         #   Add w_p = -wmax, +wmax to sampling poles
-        omega = np.unique(np.hstack([-1, basis_f.default_omega_sampling_points()/wmax_, 1]))
-        print(omega.size, file=f)
-        for x in omega:
+        omegas = np.unique(np.hstack([-wmax_, basis_f.default_omega_sampling_points(), wmax_]))
+        ys = omegas / wmax_
+        print(omegas.size, file=f)
+        for x in ys:
             print('{:.16e}'.format(x), file=f)
 
         print(f"# v", file=f)
-        vval = np.sqrt(wmax_) * basis_f.v(omega)
+        vval = np.sqrt(wmax_) * basis_f.v(omegas)
         for l in range(basis_f.size):
-            for i in range(omega.size):
+            for i in range(omegas.size):
                 print('{:.16e}'.format(vval[l, i]), file=f)
 
 if __name__ == '__main__':

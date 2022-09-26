@@ -35,7 +35,8 @@ program main
 
         y_reconst = transpose(matmul(dm%a, transpose(x)))
         if (maxval(abs(y - y_reconst)) > 1e-12) then
-            stop "y and y_reconst do not match!"
+            write(*,*) "y and y_reconst do not match!"
+            stop 1
         end if
         !write(*, *) y
         !write(*, *) y_reconst
@@ -57,7 +58,8 @@ program main
 
         y_reconst = transpose(matmul(dm%a, transpose(x)))
         if (maxval(abs(y - y_reconst)) > 1e-12) then
-            stop "y and y_reconst do not match!"
+            write(*,*) "y and y_reconst do not match!"
+            stop 1
         end if
         call finalize_dmat(dm)
     end subroutine
@@ -84,7 +86,8 @@ program main
         y_reconst = transpose(matmul(dm%a, transpose(x)))
         !write(*,*) "y: ", y_reconst
         if (maxval(abs(y - y_reconst)) > 1e-12) then
-            stop "y and y_reconst do not match!"
+            write(*,*) "y and y_reconst do not match!"
+            stop 1
         end if
         call finalize_dmat(dm)
     end subroutine
@@ -117,10 +120,12 @@ program main
         end if
 
         if (abs(ir_obj%beta - beta) > 1d-10) then
-            stop "beta does not match"
+            write(*,*) "beta does not match"
+            stop 1
         end if
         if (abs(ir_obj%wmax - wmax) > 1d-10) then
-            stop "wmax does not match"
+            write(*,*) "wmax does not match"
+            stop 1
         end if
 
         ! With ω0 = 1/β,
@@ -150,18 +155,20 @@ program main
             !write(*,*) real(gl_matsu(1,l)), real(gl_tau(1,l))
         !end do
         if (maxval(abs(gl_matsu - gl_tau)) > 1d2*eps) then
-            stop "gl_matsu and gl_tau do not match!"
+            write(*,*) "gl_matsu and gl_tau do not match!"
+            stop 1
         end if
 
         call evaluate_matsubara_f(ir_obj, gl_matsu, giv_reconst)
         if (maxval(abs(giv - giv_reconst)) > 1d2*eps) then
-            write(*, *) "C"
-            stop "giv do not match!"
+            write(*,*) "giv do not match!"
+            stop 1
         end if
 
         call evaluate_tau(ir_obj, gl_tau, gtau_reconst)
         if (maxval(abs(gtau - gtau_reconst)) > 1d2*eps) then
-            stop "gtau do not match!"
+            write(*,*) "gtau do not match!"
+            stop 1
         end if
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
@@ -197,10 +204,12 @@ program main
         end if
 
         if (abs(ir_obj%beta - beta) > 1d-10) then
-            stop "beta does not match"
+            write(*,*) "beta does not match"
+            stop 1
         end if
         if (abs(ir_obj%wmax - wmax) > 1d-10) then
-            stop "wmax does not match"
+            write(*,*) "wmax does not match"
+            stop 1
         end if
 
         ! With ω0 = 1/β,
@@ -231,18 +240,20 @@ program main
         !end do
 
         if (maxval(abs(gl_matsu - gl_tau)) > 1d2*eps) then
-            stop "gl_matsu and gl_tau do not match!"
+            write(*,*) "gl_matsu and gl_tau do not match!"
+            stop 1
         end if
 
         call evaluate_matsubara_b(ir_obj, gl_matsu, giv_reconst)
         if (maxval(abs(giv - giv_reconst)) > 1d2*eps) then
-            write(*, *) "A"
-            stop "gtau do not match!"
+            write(*,*) "gtau do not match!"
+            stop 1
         end if
 
         call evaluate_tau(ir_obj, gl_tau, gtau_reconst)
         if (maxval(abs(gtau - gtau_reconst)) > 1d2*eps) then
-            stop "gtau do not match!"
+            write(*,*) "gtau do not match!"
+            stop 1
         end if
 
         deallocate(giv, gtau, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
@@ -280,10 +291,12 @@ program main
         end if
 
         if (abs(ir_obj%beta - beta) > 1d-10) then
-            stop "beta does not match"
+            write(*,*) "beta does not match"
+            stop 1
         end if
         if (abs(ir_obj%wmax - wmax) > 1d-10) then
-            stop "wmax does not match"
+            write(*,*) "wmax does not match"
+            stop 1
         end if
 
         ! With ω0 = 1/β,
@@ -318,7 +331,8 @@ program main
             !write(*,*) real(gl_matsu(1,l)), real(gl_tau(1,l))
         !end do
         if (maxval(abs(gl_matsu - gl_tau)) > 1d2*eps) then
-            stop "gl_matsu and gl_tau do not match!"
+            write(*,*) "gl_matsu and gl_tau do not match!"
+            stop 1
         end if
 
         call to_dlr (ir_obj, gl_matsu, g_dlr) 
@@ -330,8 +344,8 @@ program main
 
         call evaluate_matsubara_f_from_dlr(ir_obj, freq, g_dlr, giv_reconst)
         if (maxval(abs(giv_ref - giv_reconst)) > 1d3*eps) then
-            write(*, *) "AAAA"
-            stop "giv do not match!"
+            write(*,*) "giv do not match!"
+            stop 1
         end if
 
         do n = 1, ntau_dlr
@@ -341,7 +355,8 @@ program main
 
         call evaluate_tau_from_dlr(ir_obj, tau, g_dlr, gtau_reconst)
         if (maxval(abs(gtau_ref - gtau_reconst)) > 1d3*eps) then
-            stop "gtau do not match!"
+            write(*,*) "gtau do not match!"
+            stop 1
         end if
 
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
@@ -380,10 +395,12 @@ program main
         end if
 
         if (abs(ir_obj%beta - beta) > 1d-10) then
-            stop "beta does not match"
+            write(*,*) "beta does not match"
+            stop 1
         end if
         if (abs(ir_obj%wmax - wmax) > 1d-10) then
-            stop "wmax does not match"
+            write(*,*) "wmax does not match"
+            stop 1
         end if
 
         ! With ω0 = 1/β,
@@ -418,7 +435,8 @@ program main
             !write(*,*) real(gl_matsu(1,l)), real(gl_tau(1,l))
         !end do
         if (maxval(abs(gl_matsu - gl_tau)) > 1d2*eps) then
-            stop "gl_matsu and gl_tau do not match!"
+            write(*,*) "gl_matsu and gl_tau do not match!"
+            stop 1
         end if
 
         call to_dlr (ir_obj, gl_matsu, g_dlr) 
@@ -430,8 +448,8 @@ program main
 
         call evaluate_matsubara_b_from_dlr(ir_obj, freq, g_dlr, giv_reconst)
         if (maxval(abs(giv_ref - giv_reconst)) > 1d3*eps) then
-            write(*, *) "B"
-            stop "giv do not match!"
+            write(*,*) "giv do not match!"
+            stop 1
         end if
 
         do n = 1, ntau_dlr
@@ -441,7 +459,8 @@ program main
 
         call evaluate_tau_from_dlr(ir_obj, tau, g_dlr, gtau_reconst)
         if (maxval(abs(gtau_ref - gtau_reconst)) > 1d3*eps) then
-            stop "gtau do not match!"
+            write(*,*) "gtau do not match!"
+            stop 1
         end if
 
         deallocate(giv_smpl, gtau_smpl, gl_matsu, gl_tau, gtau_reconst, giv_reconst)
