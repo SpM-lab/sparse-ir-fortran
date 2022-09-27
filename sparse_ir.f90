@@ -355,12 +355,11 @@ module sparse_ir
         complex(kind(0d0)), intent (in) :: arr(:, :)
         type(DecomposedMatrix), intent(in) :: mat
         complex(kind(0d0)), intent(out) :: res(:, :)
-
+        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
+        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
         complex(kind(0d0)), allocatable :: ut_arr(:, :)
 
         integer :: nb, m, n, ns, i, j
-        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
-        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
 
         ! ut(ns, m)
         ! v(n, ns)
