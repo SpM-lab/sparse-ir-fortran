@@ -142,7 +142,7 @@ f"""
     function mk_nlambda{nlambda}_ndigit{ndigit}(beta) result(obj)
         double precision, intent(in) :: beta
         type(IR) :: obj
-        complex(kind(0d0)), allocatable :: u(:, :), uhat_f(:, :), uhat_b(:, :), v(:, :), spr(:, :)
+        complex(kind(0d0)), allocatable :: u(:, :), uhat_f(:, :), uhat_b(:, :), v(:, :), dlr(:, :)
         integer, parameter :: size = {b.size}, ntau = {b.ntau}, nfreq_f = {b.nfreq_f}, nfreq_b = {b.nfreq_b}, nomega = {b.nomega}
         integer, parameter :: nlambda = {nlambda}, ndigit = {ndigit}
         integer, parameter :: ntau_reduced = ntau/2+1, nfreq_f_reduced = nfreq_f/2+1, nfreq_b_reduced = nfreq_b/2+1
@@ -160,7 +160,7 @@ f"""
         allocate(uhat_f(nfreq_f, size))
         allocate(uhat_b(nfreq_b, size))
         allocate(v(nomega, size))
-        allocate(spr(nomega, size))
+        allocate(dlr(nomega, size))
 
         ! Use the fact U_l(tau) is even/odd for even/odd l-1.
         do l = 1, size
@@ -211,7 +211,7 @@ f"""
                 v(nomega-iomega+1, l) = (-1)**(l-1) * v_r_{sig}(iomega + {b.nomega_reduced}*(l-1))
             end do
             do iomega = 1, nomega
-                spr(iomega, l) = - s_{sig}(l) * v(iomega, l)
+                dlr(iomega, l) = - s_{sig}(l) * v(iomega, l)
             end do
         end do
 
@@ -219,9 +219,9 @@ f"""
             s_{sig}, tau_{sig},&
             freq_f_{sig}, freq_b_{sig},&
             u, uhat_f, uhat_b, omega_{sig},&
-            v, spr, 1d-20)
+            v, dlr, 1d-20)
 
-        deallocate(u, uhat_f, uhat_b, v, spr)
+        deallocate(u, uhat_f, uhat_b, v, dlr)
     end function
 """
     )

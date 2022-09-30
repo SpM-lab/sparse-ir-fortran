@@ -19,18 +19,18 @@ module sparse_ir
         integer, allocatable :: freq_f(:), freq_b(:)
         complex(kind(0d0)), allocatable :: u_data(:,:)
         complex(kind(0d0)), allocatable :: uhat_f_data(:,:), uhat_b_data(:,:)
-        complex(kind(0d0)), allocatable :: v_data(:,:), spr_data(:,:)
+        complex(kind(0d0)), allocatable :: v_data(:,:), dlr_data(:,:)
         type(DecomposedMatrix) :: u
         type(DecomposedMatrix) :: uhat_f, uhat_b
-        type(DecomposedMatrix) :: spr
+        type(DecomposedMatrix) :: dlr
     end type
 
     contains
 
-    subroutine init_ir(obj, beta, lambda, eps, s, x, freq_f, freq_b, u, uhat_f, uhat_b, y, v, spr, eps_svd)
+    subroutine init_ir(obj, beta, lambda, eps, s, x, freq_f, freq_b, u, uhat_f, uhat_b, y, v, dlr, eps_svd)
         type(IR), intent(inout) :: obj
         double precision, intent(in) :: beta, lambda, eps, s(:), x(:), y(:), eps_svd
-        complex(kind(0d0)), intent(in) :: u(:,:), uhat_f(:, :), uhat_b(:, :), v(:, :), spr(:, :)
+        complex(kind(0d0)), intent(in) :: u(:,:), uhat_f(:, :), uhat_b(:, :), v(:, :), dlr(:, :)
         integer, intent(in) :: freq_f(:), freq_b(:)
 
         if (allocated(obj%x)) then
@@ -77,13 +77,13 @@ module sparse_ir
         allocate(obj%v_data(obj%nomega, obj%size))
         obj%v_data = v
 
-        allocate(obj%spr_data(obj%size, obj%nomega))
-        obj%spr_data = transpose(spr)
+        allocate(obj%dlr_data(obj%size, obj%nomega))
+        obj%dlr_data = transpose(dlr)
 
         obj%u = decompose(obj%u_data, obj%eps_svd)
         obj%uhat_f = decompose(obj%uhat_f_data, obj%eps_svd)
         obj%uhat_b = decompose(obj%uhat_b_data, obj%eps_svd)
-        obj%spr = decompose2(obj%spr_data, obj%eps_svd)
+        obj%dlr = decompose2(obj%dlr_data, obj%eps_svd)
 
         ! Here we define basis sets for the input value of beta. 
         call set_beta(obj, beta)
@@ -102,12 +102,12 @@ module sparse_ir
         obj%u%a(:, :) = sqrt(2.0d0/beta)*obj%u_data(:, :)
         obj%uhat_f%a(:, :) = sqrt(beta) * obj%uhat_f_data(:, :)
         obj%uhat_b%a(:, :) = sqrt(beta) * obj%uhat_b_data(:, :)
-        obj%spr%a(:, :) = sqrt(5.0d-1*beta)*obj%spr_data(:, :)
+        obj%dlr%a(:, :) = sqrt(5.0d-1*beta)*obj%dlr_data(:, :)
 
         obj%u%inv_s(:) = sqrt(5.0d-1*beta) * obj%u%inv_s_dl(:)
         obj%uhat_f%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_f%inv_s_dl(:)
         obj%uhat_b%inv_s(:) = (1.0d0 / sqrt(beta)) * obj%uhat_b%inv_s_dl(:)
-        obj%spr%inv_s(:) = sqrt(2.0d0 / beta) * obj%spr%inv_s_dl(:)
+        obj%dlr%inv_s(:) = sqrt(2.0d0 / beta) * obj%dlr%inv_s_dl(:)
 
     end subroutine
 
@@ -125,12 +125,12 @@ module sparse_ir
         if (allocated(obj%y)) deallocate(obj%y)
         if (allocated(obj%omega)) deallocate(obj%omega)
         if (allocated(obj%v_data)) deallocate(obj%v_data)
-        if (allocated(obj%spr_data)) deallocate(obj%spr_data)
+        if (allocated(obj%dlr_data)) deallocate(obj%dlr_data)
     
         call finalize_dmat(obj%u)
         call finalize_dmat(obj%uhat_f)
         call finalize_dmat(obj%uhat_b)
-        call finalize_dmat(obj%spr)
+        call finalize_dmat(obj%dlr)
     end subroutine
 
     subroutine finalize_dmat(dmat)
@@ -355,7 +355,8 @@ module sparse_ir
         complex(kind(0d0)), intent (in) :: arr(:, :)
         type(DecomposedMatrix), intent(in) :: mat
         complex(kind(0d0)), intent(out) :: res(:, :)
-
+        complex(kind(0d0)), PARAMETER :: cone  = (1.0d0, 0.0d0)
+        complex(kind(0d0)), PARAMETER :: czero  = (0.0d0, 0.0d0)
         complex(kind(0d0)), allocatable :: ut_arr(:, :)
 
         integer :: nb, m, n, ns, i, j
@@ -378,7 +379,7 @@ module sparse_ir
 
         !ut(ns, m) * arr(nb, m) -> ut_arr(ns, nb)
         ut_arr = 0.0
-        call zgemm("n", "t", ns, nb, m, 1.d0, mat%ut, ns, arr, nb, 0.d0, ut_arr, ns)
+        call zgemm("n", "t", ns, nb, m, cone, mat%ut, ns, arr, nb, czero, ut_arr, ns)
         do j = 1, ns
             do i = 1, nb
                 ut_arr(j, i) = ut_arr(j, i) * mat%inv_s(j)
@@ -387,19 +388,19 @@ module sparse_ir
 
         ! ut_arr(ns, nb) * v(n, ns) -> (nb, n)
         res = 0.0
-        call zgemm("t", "t", nb, n, ns, 1.d0, ut_arr, ns, mat%v, n, 0.d0, res, nb)
+        call zgemm("t", "t", nb, n, ns, cone, ut_arr, ns, mat%v, n, czero, res, nb)
 
         deallocate(ut_arr)
     end subroutine
 
-    subroutine to_spr(obj, arr, res)
+    subroutine to_dlr(obj, arr, res)
         type(IR), intent(in) :: obj
         complex(kind(0d0)), intent (in) :: arr(:, :)
         complex(kind(0d0)), intent(out) :: res(:, :)
-        call fit_impl(arr, obj%spr, res)
+        call fit_impl(arr, obj%dlr, res)
     end subroutine
       
-    subroutine evaluate_tau_from_spr(obj, tau, arr, res)
+    subroutine evaluate_tau_from_dlr(obj, tau, arr, res)
         type(IR), intent(in) :: obj
         double precision, intent(in) :: tau(:)
         complex(kind(0d0)), intent (in) :: arr(:, :)
@@ -447,7 +448,7 @@ module sparse_ir
         !
     end subroutine
       
-    subroutine evaluate_matsubara_f_from_spr(obj, freq, arr, res)
+    subroutine evaluate_matsubara_f_from_dlr(obj, freq, arr, res)
         type(IR), intent(in) :: obj
         integer, intent(in) :: freq(:)
         complex(kind(0d0)), intent (in) :: arr(:, :)
@@ -483,7 +484,7 @@ module sparse_ir
         !
     end subroutine
 
-    subroutine evaluate_matsubara_b_from_spr(obj, freq, arr, res)
+    subroutine evaluate_matsubara_b_from_dlr(obj, freq, arr, res)
         type(IR), intent(in) :: obj
         integer, intent(in) :: freq(:)
         complex(kind(0d0)), intent (in) :: arr(:, :)
