@@ -105,3 +105,7 @@ This subroutine updates the objects depending on `beta`.
 ## Available objects and subroutines
 
 A detailed explanation of the IR basis objects and subroutines is shown [HERE](https://spm-lab.github.io/sparse-ir-fortran/).
+
+## Tutorial
+
+A tutorial for sparse-ir can be found [here](https://spm-lab.github.io/sparse-ir-tutorial/).
