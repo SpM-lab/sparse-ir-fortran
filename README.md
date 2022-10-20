@@ -66,7 +66,7 @@ a Fortran module itself.
     You do not need `sparse_ir_preset.f90` if your program reads a data file at
     runtime.
 
-### Embedding data in aFortran source file
+### Embedding data in a Fortran source file
 
  1. Generate a fortran source file:  The following command generates a source
     file containg data for a matrix of Λ=10<sup>nlambda</sup>
