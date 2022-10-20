@@ -148,7 +148,8 @@ This subroutine updates the objects depending on `beta`.
 
 License and citation
 --------------------
-This software is released under the MIT License.  See LICENSE for details.
+This software is released under the Creative Commons Zero license.  See LICENSE
+for details.
 
 If you find the intermediate representation, sparse sampling, or this software
 useful in your research, please consider citing the following papers:
