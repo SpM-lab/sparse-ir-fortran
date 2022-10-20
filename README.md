@@ -40,8 +40,8 @@ and sparse sampling.
 [Julia library]: https://github.com/SpM-lab/SparseIR.jl
 
 
-Creating a the basis functions
-------------------------------
+Creating the basis functions
+----------------------------
 In order to work with sparse-ir-fortran, you first have to construct the
 basis functions.  For this, you have two options: you can either create
 data files, which you load at runtime, or you can embed the data into
