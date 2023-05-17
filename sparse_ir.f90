@@ -63,6 +63,7 @@
   !!
   !! This contains a given transformation matrix and the resultants from SVD of it
   !!
+  !
   COMPLEX(KIND = DP), ALLOCATABLE :: a(:, :)
   !! original matrix A
   REAL(KIND = DP), ALLOCATABLE :: a_real(:, :)
@@ -106,6 +107,7 @@
   !!
   !! This contains a given transformation matrix and the resultants from SVD of it
   !!
+  !
   COMPLEX(KIND = DP), ALLOCATABLE :: a(:, :)
   !! original matrix A
   REAL(KIND = DP), ALLOCATABLE :: a_real(:, :)
@@ -140,6 +142,7 @@
   !! This contains all the IR-basis objects, 
   !! such as sampling points, and basis functions
   !!
+  !
   INTEGER :: size
   !! total number of IR basis functions (size of s)
   INTEGER :: ntau
@@ -215,6 +218,7 @@
   !! This routine should be called by read_ir or mk_ir_preset. 
   !! Do not call in other routines directly.
   !!
+  !
   TYPE(IR), INTENT(INOUT) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: beta
@@ -344,6 +348,7 @@
   !! This routine update IR-basis objects for a given beta.
   !! This is called in init_ir at once.
   !!
+  !
   TYPE(IR), INTENT(INOUT) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: beta
@@ -385,6 +390,7 @@
   !!
   !! This routine deallocates IR-basis objects contained in obj
   !!
+  !
   TYPE(IR) :: obj
   !! contains all the IR-basis objects
   IF (ALLOCATED(obj%x)) DEALLOCATE(obj%x)
@@ -414,8 +420,10 @@
   !!
   !! This routine deallocates arrays contained in dmat
   !!
+  !
   TYPE(DecomposedMatrix_z) :: dmat
   !! contains a given transformation matrix and the resultants from SVD of it
+  !
   IF (ALLOCATED(dmat%a)) DEALLOCATE(dmat%a)
   IF (ALLOCATED(dmat%a_real)) DEALLOCATE(dmat%a_real)
   IF (ALLOCATED(dmat%a_imag)) DEALLOCATE(dmat%a_imag)
@@ -437,8 +445,13 @@
   !-----------------------------------------------------------------------
   SUBROUTINE finalize_dmat_d(dmat)
   !-----------------------------------------------------------------------
+  !!
+  !! This routine deallocates arrays contained in dmat
+  !!
+  !
   TYPE(DecomposedMatrix_d) :: dmat
   !! contains a given transformation matrix and the resultants from SVD of it
+  !
   IF (ALLOCATED(dmat%a)) DEALLOCATE(dmat%a)
   IF (ALLOCATED(dmat%a_real)) DEALLOCATE(dmat%a_real)
   IF (ALLOCATED(dmat%inv_s)) DEALLOCATE(dmat%inv_s)
@@ -459,6 +472,7 @@
   !! This routine performs SVD of complex-valued matrix a. 
   !! Singular values smaller than eps * the largest one are dropped.
   !!
+  !
   COMPLEX(KIND = DP), INTENT(IN) :: a(:, :)
   !! original matrix a
   REAL(KIND = DP), INTENT(IN) :: eps
@@ -597,6 +611,7 @@
   !! This routine performs SVD of real-valued matrix a. 
   !! Singular values smaller than eps * the largest one are dropped.
   !!
+  !
   REAL(KIND = DP), INTENT(IN) :: a(:, :)
   !! original matrix a
   REAL(KIND = DP), INTENT(IN) :: eps
@@ -743,6 +758,7 @@
   !! the fitting is performed correctly in fit_matsubara_{f,b}
   !! distinguishing it from the case of positive_only = false.
   !!
+  !
   COMPLEX(KIND = DP), INTENT(IN) :: a(:, :)
   !! original matrix a
   LOGICAL, INTENT(IN) :: has_zero
@@ -913,6 +929,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -997,6 +1014,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are real arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1047,6 +1065,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1102,6 +1121,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1154,6 +1174,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1272,6 +1293,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1353,6 +1375,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1471,6 +1494,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1568,6 +1592,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1712,6 +1737,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1809,6 +1835,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -1905,6 +1932,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are real arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2000,6 +2028,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2135,6 +2164,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2245,6 +2275,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2380,6 +2411,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2493,6 +2525,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2645,6 +2678,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2750,6 +2784,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   COMPLEX(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2817,7 +2852,7 @@
   !
   !-----------------------------------------------------------------------
   SUBROUTINE to_dlr_dd(obj, arr, res)
-    !-----------------------------------------------------------------------
+  !-----------------------------------------------------------------------
   !!
   !! This routine transfers expansion coefficients in the IR basis
   !! to that in the DLR basis.
@@ -2854,6 +2889,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are real arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: arr(:, :)
@@ -2925,6 +2961,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: tau(:)
@@ -3002,6 +3039,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: tau(:)
@@ -3080,6 +3118,7 @@
   !! This subroutine is called when
   !! the input array is complex and the output array is real.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: tau(:)
@@ -3158,6 +3197,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are real arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   REAL(KIND = DP), INTENT(IN) :: tau(:)
@@ -3235,6 +3275,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   INTEGER, INTENT(IN) :: freq(:)
@@ -3298,6 +3339,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   INTEGER, INTENT(IN) :: freq(:)
@@ -3360,6 +3402,7 @@
   !! This subroutine is called when
   !! both the input and output arrays are complex arrays.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   INTEGER, INTENT(IN) :: freq(:)
@@ -3423,6 +3466,7 @@
   !! This subroutine is called when
   !! the input array is real and the output array is complex.
   !!
+  !
   TYPE(IR), INTENT(IN) :: obj
   !! contains all the IR-basis objects
   INTEGER, INTENT(IN) :: freq(:)

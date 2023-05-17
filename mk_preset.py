@@ -171,7 +171,8 @@ f"""\
   COMPLEX(KIND = DP), ALLOCATABLE :: uhat_f(:, :), uhat_b(:, :)
   INTEGER, PARAMETER :: size = {b.size}, ntau = {b.ntau}, nfreq_f = {b.nfreq_f}, nfreq_b = {b.nfreq_b}, nomega = {b.nomega}
   INTEGER, PARAMETER :: nlambda = {nlambda}, ndigit = {ndigit}
-  INTEGER, PARAMETER :: ntau_reduced = ntau/2+1, nfreq_f_reduced = nfreq_f/2+1, nfreq_b_reduced = nfreq_b/2+1
+  INTEGER, PARAMETER :: ntau_reduced = ntau/2+1
+  INTEGER, PARAMETER :: nfreq_f_reduced = nfreq_f/2+1, nfreq_b_reduced = nfreq_b/2+1
   INTEGER, PARAMETER :: nomega_reduced = nomega/2+1
   REAL(KIND = DP), PARAMETER :: lambda = 1.d{nlambda}, eps = 1.d-{ndigit}
   !
@@ -309,6 +310,7 @@ f"""\
 
     print(
 f"""\
+  !
   !-----------------------------------------------------------------------
   END SUBROUTINE init_{var_name}
   !-----------------------------------------------------------------------
