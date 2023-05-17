@@ -7,14 +7,6 @@
   !
   IMPLICIT NONE
   !
-  INTEGER, PARAMETER :: DP = KIND(0d0)
-  REAL(KIND = DP), PARAMETER :: one = 1.0D0
-  REAL(KIND = DP), PARAMETER :: zero = 0.0D0
-  REAL(KIND = DP), PARAMETER :: pi = 4.D0*ATAN(1.D0)
-  COMPLEX(KIND = DP), PARAMETER :: cone = (1.0D0, 0.0D0)
-  COMPLEX(KIND = DP), PARAMETER :: ci = (0.0D0, 1.0D0)
-  COMPLEX(KIND = DP), PARAMETER :: czero = (0.0D0, 0.0D0)
-  !
   ! use preset
   CALL test_fermion(.true., .false., .false., .false.)
   CALL test_boson  (.true., .false., .false., .false.)

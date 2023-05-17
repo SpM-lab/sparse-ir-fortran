@@ -6,8 +6,6 @@
   !
   IMPLICIT NONE
   !
-  INTEGER, PARAMETER :: DP = KIND(0d0)
-  !
   CONTAINS
   !
   !-----------------------------------------------------------------------
