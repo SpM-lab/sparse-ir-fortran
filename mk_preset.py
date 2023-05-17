@@ -82,7 +82,7 @@ MODULE sparse_ir_preset
   !
   IMPLICIT NONE
   !
-""")
+""", end="")
     for nlambda in nlambda_list:
         for ndigit in ndigit_list:
             b = bases[(nlambda, ndigit)]
@@ -98,8 +98,7 @@ f"""\
   REAL(KIND = DP) :: uhat_f_r_{sig}({b.nfreq_f_reduced} * {b.size})
   REAL(KIND = DP) :: uhat_b_r_{sig}({b.nfreq_b_reduced} * {b.size})
   REAL(KIND = DP) :: v_r_{sig}({b.nomega_reduced} * {b.size})
-"""
-            )
+""", end="")
 
     print(
 """\
@@ -115,7 +114,7 @@ f"""\
   LOGICAL, INTENT(IN), OPTIONAL :: positive_only
   TYPE(IR) :: obj
   !
-""")
+""", end="")
 
     for nlambda in nlambda_list:
         for ndigit in ndigit_list:
@@ -130,8 +129,7 @@ f"""\
     RETURN
   ENDIF
   !
-"""
-            )
+""", end="")
 
 
     print(
@@ -142,14 +140,18 @@ f"""\
   END FUNCTION mk_ir_preset
   !-----------------------------------------------------------------------
   !
-"""
-            )
+""", end="")
 
     for nlambda in nlambda_list:
         for ndigit in ndigit_list:
             print_data(nlambda, ndigit, bases[(nlambda, ndigit)])
 
-    print("end module")
+    print(
+"""\
+  !-----------------------------------------------------------------------
+  END MODULE sparse_ir_preset
+  !-----------------------------------------------------------------------
+""", end="")
 
 
 def print_data(nlambda, ndigit, b):
@@ -173,9 +175,9 @@ f"""
   !
   INTEGER :: itau, l, ifreq, iomega
   !
-""")
+""", end="")
     for varname in ["s", "tau", "freq_f", "freq_b", "u_r", "uhat_f_r", "uhat_b_r", "omega", "v_r"]:
-        print(8*" " + f"call init_{varname}_{sig}()")
+        print(2*" " + f"CALL init_{varname}_{sig}()")
 
     print(
 f"""
@@ -258,8 +260,7 @@ f"""
   END FUNCTION mk_nlambda{nlambda}_ndigit{ndigit}
   !-----------------------------------------------------------------------
   !
-"""
-    )
+""", end="")
 
     print_vector_data(b.s, f"s_{sig}")
     print_vector_data(b.x, f"tau_{sig}")
@@ -293,16 +294,15 @@ f"""
   SUBROUTINE init_{var_name}()
   !-----------------------------------------------------------------------
   !
-"""
-    )
+""", end="")
     start = 0
     while start < vec.size:
         end = min(start + NLINE, vec.size)
         sub_vec = vec[start:end]
-        print("  ", f"{var_name}({start+1}:{end}) = (/ &")
+        print(2*" " + f"{var_name}({start+1}:{end}) = (/ &")
         end_str = "&"
         print(", &\n".join(_array_to_strings(sub_vec)) + end_str)
-        print("  " + "/)")
+        print(2*" " + "/)")
         start = end
 
     print(
@@ -311,8 +311,7 @@ f"""
   END SUBROUTINE init_{var_name}
   !-----------------------------------------------------------------------
   !
-"""
-    )
+""", end="")
 
 
 if __name__ == '__main__':
