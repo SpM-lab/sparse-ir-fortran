@@ -82,8 +82,6 @@ MODULE sparse_ir_preset
   !
   IMPLICIT NONE
   !
-  INTEGER, PARAMETER :: DP = KIND(0d0)
-  !
 """)
     for nlambda in nlambda_list:
         for ndigit in ndigit_list:
