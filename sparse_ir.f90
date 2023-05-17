@@ -7,7 +7,7 @@
   INTEGER, PARAMETER :: DP = KIND(0d0)
   REAL(KIND = DP), PARAMETER :: one = 1.0D0
   REAL(KIND = DP), PARAMETER :: zero = 0.0D0
-  REAL(KIND = DP), PARAMETER :: pi = 4.D0*ATAN(1.D0, KIND = DP)
+  REAL(KIND = DP), PARAMETER :: pi = 4.D0*ATAN(1.D0)
   COMPLEX(KIND = DP), PARAMETER :: cone = (1.0D0, 0.0D0)
   COMPLEX(KIND = DP), PARAMETER :: ci = (0.0D0, 1.0D0)
   COMPLEX(KIND = DP), PARAMETER :: czero = (0.0D0, 0.0D0)
@@ -192,10 +192,10 @@
   TYPE(DecomposedMatrix_z) :: uhat_f
   !! stores IR-basis functions of Matsubara freqs (F)
   !! and the resultants from SVD of it
-  TYPE(DecomposedMatrix_d) :: uhat_b
+  TYPE(DecomposedMatrix_z) :: uhat_b
   !! stores IR-basis functions of Matsubara freqs (B)
   !! and the resultants from SVD of it
-  TYPE(DecomposedMatrix_z) :: dlr
+  TYPE(DecomposedMatrix_d) :: dlr
   !! stores change-of-basis matrix 
   !! and the resultants from SVD of it
   LOGICAL :: positive_only
@@ -716,7 +716,7 @@
   !-----------------------------------------------------------------------
   !
   !-----------------------------------------------------------------------
-  FUNCTION split_decompose(a, has_zero, eps,ill_conditioned) RESULT(dmat)
+  FUNCTION split_decompose(a, has_zero, eps, ill_conditioned) RESULT(dmat)
   !-----------------------------------------------------------------------
   !!
   !! This routine performs "split SVD" of uhat_f or uhat_b.
