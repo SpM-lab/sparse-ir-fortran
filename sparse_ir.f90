@@ -748,15 +748,13 @@
   !!     fit(A, x) == v / s @ REAL(CONJG(TRANSPOSE(u)) * x)
   !!
   !! This again allows for fast and accurate least squares fits.
-  !! Note that the imaginary part of the resulting IR basis coefficients 
-  !! will return bullshit values if the u or vt obtained by this subroutine 
-  !! are used to fit as follows:
   !!
-  !!     fit(A, x) == v / s @ (uH * x)
-  !!
-  !! Since this subroutine is only called when positive_only = true, 
-  !! the fitting is performed correctly in fit_matsubara_{f,b}
-  !! distinguishing it from the case of positive_only = false.
+  !! This subroutine is called if positive_only = true.
+  !! If s, u, and vT are obtained in this subroutine, the imaginary
+  !! part of (CONJG(TRANSPOSE(u)) * x) returns a non-zero
+  !! value indeed, but that value should be ignored. 
+  !! Only the real part will be used in fit_matsubara_{f,b}
+  !! if positive_only = true.
   !!
   !
   COMPLEX(KIND = DP), INTENT(IN) :: a(:, :)
