@@ -6,6 +6,12 @@
   !
   IMPLICIT NONE
   !
+  PRIVATE
+  !
+  INTEGER, PARAMETER :: DP = KIND(0d0)
+  !
+  PUBLIC :: read_ir
+  !
   CONTAINS
   !
   !-----------------------------------------------------------------------
@@ -45,7 +51,6 @@
   !-----------------------------------------------------------------------
   END FUNCTION read_ir
   !-----------------------------------------------------------------------
-  !
   !
   !-----------------------------------------------------------------------
   FUNCTION read_v1(unit, beta, positive_only) RESULT(obj)
@@ -207,7 +212,7 @@
     CALL init_ir(obj, beta, lambda, eps, s, tau, freq_f, freq_b, u, uhat_f, uhat_b, omega, v, dlr, 1d-16, positive_only)
   ENDIF
   !
-  DEALLOCATE(u, uhat_f, uhat_b, v, dlr)
+  DEALLOCATE(s, tau, u, freq_f, uhat_f, freq_b, uhat_b, omega, v, dlr)
   !
   !-----------------------------------------------------------------------
   END FUNCTION read_v1

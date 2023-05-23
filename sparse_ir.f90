@@ -4,6 +4,8 @@
   !
   IMPLICIT NONE
   !
+  PRIVATE
+  !
   INTEGER, PARAMETER :: DP = KIND(0d0)
   REAL(KIND = DP), PARAMETER :: one = 1.0D0
   REAL(KIND = DP), PARAMETER :: zero = 0.0D0
@@ -56,6 +58,13 @@
   INTERFACE evaluate_matsubara_b_from_dlr
     MODULE PROCEDURE evaluate_matsubara_b_from_dlr_zz, evaluate_matsubara_b_from_dlr_dz
   END INTERFACE evaluate_matsubara_b_from_dlr
+  !
+  PUBLIC :: DecomposedMatrix_z, DecomposedMatrix_d, IR
+  PUBLIC :: init_ir, set_beta, finalize_ir
+  PUBLIC :: evaluate_tau, evaluate_matsubara_f, evaluate_matsubara_b
+  PUBLIC :: fit_tau, fit_matsubara_f, fit_matsubara_b
+  PUBLIC :: to_dlr
+  PUBLIC :: evaluate_tau_from_dlr, evaluate_matsubara_f_from_dlr, evaluate_matsubara_b_from_dlr
   !
   !-----------------------------------------------------------------------
   TYPE DecomposedMatrix_z
@@ -393,6 +402,7 @@
   !
   TYPE(IR) :: obj
   !! contains all the IR-basis objects
+  !
   IF (ALLOCATED(obj%x)) DEALLOCATE(obj%x)
   IF (ALLOCATED(obj%tau)) DEALLOCATE(obj%tau)
   IF (ALLOCATED(obj%s)) DEALLOCATE(obj%s)
@@ -430,7 +440,7 @@
   IF (ALLOCATED(dmat%a_odd)) DEALLOCATE(dmat%a_odd)
   IF (ALLOCATED(dmat%a_even)) DEALLOCATE(dmat%a_even)
   IF (ALLOCATED(dmat%inv_s)) DEALLOCATE(dmat%inv_s)
-  IF (ALLOCATED(dmat%inv_s)) DEALLOCATE(dmat%inv_s_dl)
+  IF (ALLOCATED(dmat%inv_s_dl)) DEALLOCATE(dmat%inv_s_dl)
   IF (ALLOCATED(dmat%ut)) DEALLOCATE(dmat%ut)
   IF (ALLOCATED(dmat%v)) DEALLOCATE(dmat%v)
   IF (ALLOCATED(dmat%ut_real)) DEALLOCATE(dmat%ut_real)
@@ -455,7 +465,7 @@
   IF (ALLOCATED(dmat%a)) DEALLOCATE(dmat%a)
   IF (ALLOCATED(dmat%a_real)) DEALLOCATE(dmat%a_real)
   IF (ALLOCATED(dmat%inv_s)) DEALLOCATE(dmat%inv_s)
-  IF (ALLOCATED(dmat%inv_s)) DEALLOCATE(dmat%inv_s_dl)
+  IF (ALLOCATED(dmat%inv_s_dl)) DEALLOCATE(dmat%inv_s_dl)
   IF (ALLOCATED(dmat%ut)) DEALLOCATE(dmat%ut)
   IF (ALLOCATED(dmat%v)) DEALLOCATE(dmat%v)
   IF (ALLOCATED(dmat%ut_real)) DEALLOCATE(dmat%ut_real)
@@ -1271,6 +1281,7 @@
   ENDIF
   DEALLOCATE(res_r)
   DEALLOCATE(res_i)
+  DEALLOCATE(arr_half)
   !
   !-----------------------------------------------------------------------
   END SUBROUTINE evaluate_matsubara_f_zz
@@ -1355,6 +1366,7 @@
   res = CMPLX(res_r, res_i, KIND = DP)
   DEALLOCATE(res_r)
   DEALLOCATE(res_i)
+  DEALLOCATE(arr_half)
   !
   !-----------------------------------------------------------------------
   END SUBROUTINE evaluate_matsubara_f_dz
@@ -1472,6 +1484,7 @@
   ENDIF
   DEALLOCATE(res_r)
   DEALLOCATE(res_i)
+  DEALLOCATE(arr_half)
   !
   !-----------------------------------------------------------------------
   END SUBROUTINE evaluate_matsubara_b_zz
@@ -1556,6 +1569,7 @@
   res = CMPLX(res_r, res_i, KIND = DP)
   DEALLOCATE(res_r)
   DEALLOCATE(res_i)
+  DEALLOCATE(arr_half)
   !
   !-----------------------------------------------------------------------
   END SUBROUTINE evaluate_matsubara_b_dz
@@ -1896,7 +1910,7 @@
   DEALLOCATE(ut_arr, arr_tmp)
   !
   !-----------------------------------------------------------------------
-  END SUBROUTINE
+  END SUBROUTINE fit_tau_zd
   !-----------------------------------------------------------------------
   !
   !-----------------------------------------------------------------------
@@ -1989,7 +2003,7 @@
   DEALLOCATE(ut_arr)
   !
   !-----------------------------------------------------------------------
-  END SUBROUTINE
+  END SUBROUTINE fit_tau_dd
   !-----------------------------------------------------------------------
   !
   !-----------------------------------------------------------------------
