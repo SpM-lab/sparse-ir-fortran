@@ -84,6 +84,12 @@ f"""\
   !
   IMPLICIT NONE
   !
+  PRIVATE
+  !
+  INTEGER, PARAMETER :: DP = KIND(0d0)
+  !
+  PUBLIC :: mk_ir_preset
+  !
 """, end="")
     for nlambda in nlambda_list:
         for ndigit in ndigit_list:
