@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up python
         uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
       - name: Install dependencies
         run: |
           sudo apt-get --yes install ccache
@@ -32,6 +34,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up python
         uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
       - name: Set up repo
         run: |
           wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
